@@ -1,5 +1,5 @@
 """
-Creates generates a secret key and appends it to the project's
+Generates a secret key and appends it to the project's
 secrets.py
 """
 import re
@@ -12,7 +12,8 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import gettext_lazy as _
 
 class Command(BaseCommand):
-
+    help = "Generates a secret key and writes/appends it to the "\
+           "designated secrets file."
     def add_arguments(self, parser):
         parser.add_argument('-o',
                             '--output-file',
