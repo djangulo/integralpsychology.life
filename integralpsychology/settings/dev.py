@@ -1,10 +1,10 @@
 from .base import *
-
+from integralpsychology.secrets import DEV_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@5&qgzoyez-pxy5tiv2mq-2grg+_z7(sfl-5@6aq4!445!!1n4'
+SECRET_KEY = DEV_SECRET_KEY
 
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ['*'] 

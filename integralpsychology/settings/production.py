@@ -1,4 +1,5 @@
 from .base import *
+from integralpsychology.secrets import SECRET_KEY
 
 DEBUG = False
 
