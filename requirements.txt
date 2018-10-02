@@ -1,0 +1,5 @@
+Django>=2.0,<2.1
+wagtail>=2.2,<2.3
+django-redis==4.9.0
+redis==2.10.6
+elasticsearch==6.3.1
