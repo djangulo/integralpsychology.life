@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load navigation_tags wagtailimages_tags %}
+{% load i18n %}
+
+{% block content %}
+
+    {% image self.image fill-1920x600 as hero_img %}
+        {% include "base/include/header-hero.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% if page.introduction %}
+                    <p class="intro">{{ page.introduction }}</p>
+                {% endif %}
+
+                <div class="blog-meta">
+                    {% if page.authors %}
+                        <div class="blog-avatars">
+                            {% for author in page.authors %}
+                                <div class="author">{% image author.image fill-50x50-c100 class="blog-avatar" %}
+                                    {{ author.first_name }} {{ author.last_name }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if page.date_published %}
+                        <div class="blog-byline">
+                            {{ page.date_published }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {{ page.body }}
+
+    {% for item in page.gallery_images.all %}
+        <div style="float: left; margin: 10px">
+            {% image item.image fill-320x240 %}
+            <p>{{ item.caption }}</p>
+        </div>
+    {% endfor %}
+    {% if request.LANGUAGE_CODE == 'en' %}
+        {% if page.tags_en.all.count %}
+        <div class="tags">
+            <h3>{% trans "Tags" %}</h3>
+            {% for tag in page.tags_en.all %}
+                <a href="{% slugurl_trans 'tags' %}?{% trans 'tag' %}={{ tag }}"><button type="button">{{ tag }}</button></a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% else %}
+        {% if page.tags_es.all.count %}
+        <div class="tags">
+            <h3>{% trans "Tags" %}</h3>
+            {% for tag in page.tags_es.all %}
+                <a href="{% slugurl_trans 'tags' %}?{% trans 'tag' %}={{ tag }}"><button type="button">{{ tag }}</button></a>
+            {% endfor %}
+        </div>
+        {% endif %}    
+    {% endif %}
+    <p><a href="{{ page.get_parent.url }}">{% trans "Return to blog" %}</a></p>
+
+{% endblock %}

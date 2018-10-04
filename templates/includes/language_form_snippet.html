@@ -1,0 +1,21 @@
+{% load i18n %}
+<form action="{% url 'set_language' %}" method="post">
+    <div class="input-group input-group-sm mt-1">
+        {% csrf_token %}
+        <select name="language" class="form-control" id="exampleFormControlSelect1">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+            <option value="{{ language.code }}{% if language.code == LANGUAGE_CODE %} selected{% endif %}">
+                {{ language.code|upper }}
+            </option>
+            {% endfor %}
+        </select>
+        <div class="input-group-append">
+            {% blocktrans %}
+            <input type="submit" class="input-group-text" value="Go"/>
+            {% endblocktrans %}
+        </div>
+    </div>
+</form>

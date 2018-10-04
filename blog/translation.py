@@ -10,12 +10,12 @@ from modeltranslation.decorators import register
 
 @register(BlogIndexPage)
 class BlogIndexPageTR(TranslationOptions):
-    fields = ('intro',)
+    fields = ('introduction',)
 
 
 @register(BlogPage)
 class BlogPageTR(TranslationOptions):
-    fields = ('intro', 'body',)
+    fields = ('introduction', 'body',)
 
 
 @register(BlogPageGalleryImage)

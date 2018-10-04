@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-02 13:35-0400\n"
+"POT-Creation-Date: 2018-10-04 08:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,30 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: models.py:104 templates/blog/blog_page.html:21
+#: blog/management/commands/generatesecretkey.py:24
+msgid "name of the output file; default \"secrets.py\""
+msgstr ""
+
+#: blog/management/commands/generatesecretkey.py:32
+msgid "name of the secret key variable; default SECRET_KEY"
+msgstr ""
+
+#: blog/models.py:105 blog/templates/blog/blog_page.html:29
+#: blog/templates/blog/blog_page.html:38
 msgid "tag"
 msgstr "etiqueta"
 
-#: templates/blog/blog_page.html:19
+#: blog/templates/blog/blog_page.html:27 blog/templates/blog/blog_page.html:36
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: templates/blog/blog_page.html:46
+#: blog/templates/blog/blog_page.html:43
 msgid "Return to blog"
 msgstr "Regresar al blog"
 
-#: templates/blog/blog_tag_index_page.html:8
+#: blog/templates/blog/blog_tag_index_page.html:7
 msgid "Showing pages tagged"
 msgstr "Mostrando páginas etiquetadas"
 
-#: templates/blog/blog_tag_index_page.html:14
+#: blog/templates/blog/blog_tag_index_page.html:13
+#: blog/templates/blog/blog_tag_index_page.html:25
 msgid "Revised"
 msgstr "Revisado"
 
-#: templates/blog/blog_tag_index_page.html:16
+#: blog/templates/blog/blog_tag_index_page.html:15
+#: blog/templates/blog/blog_tag_index_page.html:27
 msgid "By"
 msgstr "Por"
 
-#: templates/blog/blog_tag_index_page.html:21
+#: blog/templates/blog/blog_tag_index_page.html:19
+#: blog/templates/blog/blog_tag_index_page.html:31
 msgid "No pages found with that tag."
 msgstr "No se encontraron páginas con esa etiqueta."
