@@ -1,9 +1,10 @@
 from .models import (
+    CaptchaFormPage,
     FormPage,
     FooterText,
     StandardPage,
     People,
-    HomePage
+    HomePage,
 )
 from .blocks import (
     BaseStreamBlock,
@@ -15,31 +16,42 @@ from modeltranslation.translator import TranslationOptions
 from modeltranslation.decorators import register
 
 
+# @register(ImageBlock)
+# class ImageBlockTR(TranslationOptions):
+#     fields = ('caption',)
+
+
 @register(People)
-class BlogIndexPageTR(TranslationOptions):
+class PeopleTR(TranslationOptions):
     fields = ('job_title',)
 
 
 @register(StandardPage)
-class BlogPageTR(TranslationOptions):
-    fields = ('introduction', 'body',)
+class StandardPageTR(TranslationOptions):
+    fields = ('introduction',)
 
 
 @register(FooterText)
-class BlogPageGalleryImageTR(TranslationOptions):
+class FooterTextTR(TranslationOptions):
     fields = ('body',)
 
 
 @register(FormPage)
-class BlogTagIndexPageTR(TranslationOptions):
+class FormPageTR(TranslationOptions):
     fields = (
         'body',
         'thank_you_text',
     )
 
+@register(CaptchaFormPage)
+class CaptchaFormPageTR(TranslationOptions):
+    fields = (
+        'thank_you_text',
+    )
+
 
 @register(HomePage)
-class BlogTagIndexPageTR(TranslationOptions):
+class HomePageTR(TranslationOptions):
     fields = (
         'hero_text',
         'hero_cta',
@@ -49,10 +61,3 @@ class BlogTagIndexPageTR(TranslationOptions):
         'featured_section_2_title',
         'featured_section_3_title',
     )
-
-
-# @register(ImageBlock)
-# class ImageBlockTR(TranslationOptions):
-#     fields = ('caption')
-
-

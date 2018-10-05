@@ -1,7 +1,7 @@
 from wagtail.contrib.modeladmin.options import (
     ModelAdmin, modeladmin_register)
 
-from contact.models import Contact
+from contact.models import Contact, ContactMessage
 
 '''
 N.B. To see what icons are available for use in Wagtail menus and StreamField block types,
@@ -29,6 +29,16 @@ class ContactsModelAdmin(ModelAdmin):
         'phone',
         'get_message_count',
     )
+    search_fields = ('first_names', 'last_names', 'email')
+
+
+# # Not needed, listed under "Forms"
+# class ContactMessageModelAdmin(ModelAdmin):
+#     model = ContactMessage
+#     menu_label = 'Contact Messages'
+#     menu_icon = 'fa-envelope-square'
+#     search_fields = ('contact', 'message',)
+
 
 
 # When using a ModelAdminGroup class to group several ModelAdmin classes together,

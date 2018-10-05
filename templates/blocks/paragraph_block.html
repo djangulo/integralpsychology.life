@@ -1,1 +1,7 @@
-{{ self }}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% if LANGUAGE_CODE == 'en' %}
+    {{ self.body }}
+{% else %}
+    {{ self.body_es }}
+{% endif %}

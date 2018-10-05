@@ -1,10 +1,19 @@
-{% if self.size == 'h2' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% if LANGUAGE_CODE == 'en' %}
+    {% if self.size == 'h2' %}
         <h2>{{ self.heading_text }}</h2>
-
     {% elif self.size == 'h3' %}
         <h3>{{ self.heading_text }}</h3>
-
     {% elif self.size == 'h4' %}
         <h4>{{ self.heading_text }}</h4>
-
+    {% endif %}
+{% else %}
+    {% if self.size == 'h2' %}
+        <h2>{{ self.heading_text_es }}</h2>
+    {% elif self.size == 'h3' %}
+        <h3>{{ self.heading_text_es }}</h3>
+    {% elif self.size == 'h4' %}
+        <h4>{{ self.heading_text_es }}</h4>
+    {% endif %}
 {% endif %}

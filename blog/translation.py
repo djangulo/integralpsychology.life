@@ -15,7 +15,7 @@ class BlogIndexPageTR(TranslationOptions):
 
 @register(BlogPage)
 class BlogPageTR(TranslationOptions):
-    fields = ('introduction', 'body',)
+    fields = ('introduction', 'subtitle',)
 
 
 @register(BlogPageGalleryImage)

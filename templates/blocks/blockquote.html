@@ -1,6 +1,13 @@
-
 {% load wagtailimages_tags %}
+{% load i18n %}
 
-<blockquote><p class="text">{{ self.text }}</p>
-<footer><p class="attribute_name">{{ self.attribute_name}}</p></footer>
+<blockquote>
+    <p class="text">
+        {% if request.LANGUAGE_CODE == 'en' %}
+            {{ self.text }}
+        {% else %}
+            {{ self.text_es }}
+        {% endif %}
+    </p>
+<footer><p class="attribute_name">{{ self.attribute_name }}</p></footer>
 </blockquote>

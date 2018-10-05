@@ -1,6 +1,11 @@
 {% load wagtailimages_tags %}
-
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <figure>
     {% image self.image fill-600x600 %}
-    <figcaption>{{ self.caption }} - {{ self.attribution }}</figcaption>
+    <figcaption>{% if LANGUAGE_CODE == 'en' %}
+                    {{ self.caption }}
+                {% else %}
+                    {{ self.caption_es }}
+                {% endif %} - {{ self.attribution }}</figcaption>
 </figure>

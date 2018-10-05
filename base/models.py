@@ -1,10 +1,6 @@
-from __future__ import unicode_literals
-
 from django.db import models
-
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     FieldRowPanel,
@@ -14,13 +10,19 @@ from wagtail.admin.edit_handlers import (
     StreamFieldPanel,
 )
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Collection, Page
-from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
+from wagtail.core.models import Page
+from wagtail.contrib.forms.models import (
+    AbstractEmailForm,
+    AbstractFormField,
+    FORM_FIELD_CHOICES,
+)
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
+
 from .blocks import BaseStreamBlock
+from .forms import CaptchaFormBuilder
 
 
 @register_snippet
@@ -140,7 +142,7 @@ class HomePage(Page):
     - A promotional area
     - Moveable featured site sections
     """
-
+    template = 'base/home_page.html'
     # Hero section of HomePage
     image = models.ForeignKey(
         'wagtailimages.Image',
@@ -311,6 +313,47 @@ class FormPage(AbstractEmailForm):
 
     # Note how we include the FormField object via an InlinePanel using the
     # related_name value
+    content_panels = AbstractEmailForm.content_panels + [
+        ImageChooserPanel('image'),
+        StreamFieldPanel('body'),
+        InlinePanel('form_fields', label="Form fields"),
+        FieldPanel('thank_you_text', classname="full"),
+        MultiFieldPanel([
+            FieldRowPanel([
+                FieldPanel('from_address', classname="col6"),
+                FieldPanel('to_address', classname="col6"),
+            ]),
+            FieldPanel('subject'),
+        ], "Email"),
+    ]
+
+class CaptchaFormField(AbstractFormField):
+    # extend the built in field type choices
+    # our field type key will be 'ipaddress'
+    CHOICES = FORM_FIELD_CHOICES + (('recaptchav2', 'Google Recaptcha V2'),)
+
+    page = ParentalKey('CaptchaFormPage', related_name='form_fields')
+    # override the field_type field with extended choices
+    field_type = models.CharField(
+        verbose_name='field type',
+        max_length=16,
+        # use the choices tuple defined above
+        choices=CHOICES
+    )
+
+class CaptchaFormPage(AbstractEmailForm):
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    body = StreamField(BaseStreamBlock())
+    thank_you_text = RichTextField(blank=True)
+
+    form_builder = CaptchaFormBuilder
+    
     content_panels = AbstractEmailForm.content_panels + [
         ImageChooserPanel('image'),
         StreamFieldPanel('body'),

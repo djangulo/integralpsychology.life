@@ -2,7 +2,7 @@ from .models import (
     Contact,
     ContactMessage,
     ContactFormPage,
-    ContactFormField,
+    ContactCaptchaFormField,
 )
 from modeltranslation.translator import TranslationOptions
 from modeltranslation.decorators import register
@@ -20,8 +20,8 @@ class ContactMessageTR(TranslationOptions):
 
 @register(ContactFormPage)
 class ContactFormPageTR(TranslationOptions):
-    fields = ('intro', 'thank_you_text',)
+    fields = ('thank_you_text',)
 
-@register(ContactFormField)
-class ContactFormFieldTR(TranslationOptions):
+@register(ContactCaptchaFormField)
+class ContactCaptchaFormFieldTR(TranslationOptions):
     fields = ('label',)
