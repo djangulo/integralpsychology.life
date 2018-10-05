@@ -1,5 +1,9 @@
 from .base import *
-from integralpsychology.secrets import DEV_SECRET_KEY
+from integralpsychology.secrets import (
+    DEV_SECRET_KEY,
+    GOOGLE_RECAPTCHA_PRIVATE_KEY,
+    GOOGLE_RECAPTCHA_PUBLIC_KEY,
+)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -11,6 +15,8 @@ ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+RECAPTCHA_PRIVATE_KEY = GOOGLE_RECAPTCHA_PRIVATE_KEY
+RECAPTCHA_PUBLIC_KEY = GOOGLE_RECAPTCHA_PUBLIC_KEY
 
 try:
     from .local import *

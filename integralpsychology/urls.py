@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
@@ -24,7 +25,7 @@ urlpatterns += i18n_patterns(
     url(r'^django-admin/', admin.site.urls),
 
     url(r'^documents/', include(wagtaildocs_urls)),
-
+    # url(_(r'^contact/'), include('contact.urls')),
     url(r'^search/$', search_views.search, name='search'),
     url(r'', include(wagtail_urls)),
 prefix_default_language=True)
