@@ -1,9 +1,10 @@
 {% load wagtailimages_tags %}
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <blockquote>
     <p class="text">
-        {% if request.LANGUAGE_CODE == 'en' %}
+        {% if LANGUAGE_CODE == 'en' %}
             {{ self.text }}
         {% else %}
             {{ self.text_es }}

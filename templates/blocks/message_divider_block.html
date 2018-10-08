@@ -1,0 +1,8 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% if LANGUAGE_CODE == 'en' %}
+    <h2 class="divider-block">{{ self.message }}</h2>
+{% else %}
+    <h2 class="divider-block">{{ self.message_es }}</h2>
+{% endif %}
