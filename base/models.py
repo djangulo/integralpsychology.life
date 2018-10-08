@@ -287,6 +287,10 @@ class HomePage(Page):
     def __str__(self):
         return self.title
 
+    @property
+    def is_home_page(self):
+        return True
+
 
 class FormField(AbstractFormField):
     """

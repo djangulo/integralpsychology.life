@@ -2,7 +2,13 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.core.blocks import (
-    CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
+    CharBlock,
+    ChoiceBlock,
+    RichTextBlock,
+    StaticBlock,
+    StreamBlock,
+    StructBlock,
+    TextBlock,
 )
 
 
@@ -44,7 +50,7 @@ class ParagraphBlock(StructBlock):
     body_es = RichTextBlock(classname='body', required=False)
 
     class Meta:
-        icon = "fa-paragraph",
+        icon = "fa-paragraph"
         template = "blocks/paragraph_block.html"
 
 
@@ -78,6 +84,16 @@ class CaptionEmbedBlock(StructBlock):
         template = 'blocks/caption_embed_block.html'
 
 
+class MessageDividerBlock(StructBlock):
+
+    message = TextBlock()
+    message_es = TextBlock()
+
+    class Meta:
+        icon = "fa-square"
+        template = 'blocks/message_divider_block.html'
+
+
 # StreamBlocks
 class BaseStreamBlock(StreamBlock):
     """
@@ -91,3 +107,4 @@ class BaseStreamBlock(StreamBlock):
         help_text='Insert an embed URL e.g https://www.youtube.com/embed/SGJFWirQ3ks',
         icon="fa-s15",
         template="blocks/embed_block.html")
+    divider_block = MessageDividerBlock()

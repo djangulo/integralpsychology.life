@@ -6,19 +6,8 @@ from .models import (
     People,
     HomePage,
 )
-from .blocks import (
-    BaseStreamBlock,
-    BlockQuote,
-    HeadingBlock,
-    ImageBlock,
-)
 from modeltranslation.translator import TranslationOptions
 from modeltranslation.decorators import register
-
-
-# @register(ImageBlock)
-# class ImageBlockTR(TranslationOptions):
-#     fields = ('caption',)
 
 
 @register(People)

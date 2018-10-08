@@ -1,11 +1,11 @@
+# from taggit.models import Tag
+from modeltranslation.translator import TranslationOptions
+from modeltranslation.decorators import register
 from .models import (
     BlogIndexPage,
     BlogPage,
     BlogPageGalleryImage,
-    BlogTagIndexPage,
 )
-from modeltranslation.translator import TranslationOptions
-from modeltranslation.decorators import register
 
 
 @register(BlogIndexPage)
@@ -21,9 +21,3 @@ class BlogPageTR(TranslationOptions):
 @register(BlogPageGalleryImage)
 class BlogPageGalleryImageTR(TranslationOptions):
     fields = ('caption',)
-
-@register(BlogTagIndexPage)
-class BlogTagIndexPageTR(TranslationOptions):
-    pass
-
-

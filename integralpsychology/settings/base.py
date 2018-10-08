@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'wagtail.core',
     'modelcluster',
     'taggit',
+    'wagtailfontawesome',
     'snowpenguin.django.recaptcha2',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -178,7 +179,20 @@ WAGTAILSEARCH_BACKENDS = {
         'INDEX': 'wagtail',
         'TIMEOUT': 5,
         'OPTIONS': {},
-        'INDEX_SETTINGS': {},
+        'INDEX_SETTINGS': {
+            'settings': {
+                'index': {
+                    'number_of_shards': 5,
+                },
+                'analysis': {
+                    'analyzer': {
+                        'default': {
+                            'type': 'english'
+                        }
+                    }
+                }
+            }
+        },
     }
 }
 

@@ -124,29 +124,16 @@ class BlogPage(Page):
         return authors
 
     @property
-    def get_en_tags(self):
+    def get_tags(self):
         """
         Similar to the authors function above we're returning all the tags that
         are related to the blog post into a list we can access on the template.
         We're additionally adding a URL to access BlogPage objects with that tag
         """
-        tags = self.tags_en.all()
-        for tag in tags:
-            tag.url = '/'+'/'.join(s.strip('/') for s in [
-                self.get_parent().url,
-                'tags',
-                tag.slug
-            ])
-        return tags
-
-    @property
-    def get_es_tags(self):
-        """
-        Similar to the authors function above we're returning all the tags that
-        are related to the blog post into a list we can access on the template.
-        We're additionally adding a URL to access BlogPage objects with that tag
-        """
-        tags = self.tags_es.all()
+        if get_language() == 'en':
+            tags = self.tags_en.all()
+        else:
+            tags = self.tags_es.all()
         for tag in tags:
             tag.url = '/'+'/'.join(s.strip('/') for s in [
                 self.get_parent().url,
@@ -196,8 +183,8 @@ class BlogIndexPage(RoutablePageMixin, Page):
             self).live().order_by('-date_published')
         return context
 
-    @route('^tags/$', name='tag_archive')
-    @route('^tags/([\w-]+)/$', name='tag_archive')
+    @route(r'^tags/$', name='tag_archive')
+    @route(r'^tags/([\w-]+)/$', name='tag_archive')
     def tag_archive(self, request, tag=None):
         try:
             tag = Tag.objects.get(slug=tag)
@@ -219,7 +206,9 @@ class BlogIndexPage(RoutablePageMixin, Page):
     def get_posts(self, tag=None):
         posts = BlogPage.objects.live().descendant_of(self)
         if tag:
-            posts = posts.filter(tags=tag)
+            posts = posts.filter(
+                models.Q(tags_en=tag) | models.Q(tags_es=tag)
+            ).distinct()
         return posts
 
     # Returns the list of Tags for all child posts of this BlogPage.
@@ -227,10 +216,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         tags = []
         for post in self.get_posts():
             # Not tags.append() because we don't want a list of lists
-            if get_language() == 'en':
-                tags += post.get_en_tags
-            else:
-                tags += post.get_es_tags
+            tags += post.get_tags
         tags = sorted(set(tags))
         return tags
 
@@ -253,34 +239,3 @@ class BlogPageGalleryImage(Orderable):
         ImageChooserPanel('image'),
         FieldPanel('caption'),
     ]
-
-
-class BlogTagIndexPage(Page):
-    def get_context(self, request):
-        tag = request.GET.get(_('tag'))
-        blogpages_en = BlogPage.objects.filter(tags_en__name=tag)
-        blogpages_es = BlogPage.objects.filter(tags_es__name=tag)
-        context = super().get_context(request)
-        context['blogpages_en'] = blogpages_en
-        context['blogpages_es'] = blogpages_es
-        return context
-
-
-# @register_snippet
-# class BlogCategory(models.Model):
-#     name = models.CharField(max_length=255)
-#     icon = models.ForeignKey(
-#         'wagtailimages.Image', null=True, blank=True,
-#         on_delete=models.SET_NULL, related_name='+'
-#     )
-
-#     panels = [
-#         FieldPanel('name'),
-#         ImageChooserPanel('icon'),
-#     ]
-
-#     def __str__(self):
-#         return self.name
-
-#     class Meta:
-#         verbose_name_plural = 'blog categories'
