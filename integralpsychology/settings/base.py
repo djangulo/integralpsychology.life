@@ -26,6 +26,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Application definition
 
 INSTALLED_APPS = [
+    'sass_processor',
     'search',
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
     'wagtailfontawesome',
+    'sekizai',
     'snowpenguin.django.recaptcha2',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,6 +89,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'sekizai.context_processors.sekizai',
                 'wagtail.contrib.settings.context_processors.settings',
             ],
         },
@@ -151,6 +154,7 @@ LANGUAGES = (
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
 ]
 
 STATICFILES_DIRS = [
@@ -208,3 +212,7 @@ CACHES = {
         }
     }
 }
+
+
+# Django-sass settings
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
