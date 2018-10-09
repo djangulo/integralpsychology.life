@@ -3,12 +3,16 @@
 
 {% for menuitem in menuitems %}
     {% if menuitem.show_dropdown %}
-    <div class="dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+    <div class="nav__div dropdown">
+        <a class="nav__link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             {% top_menu_children parent=menuitem %}
         </a>
     </div>
     {% else %}
-        <a class="nav-item nav-link {{ menuitem.title|lower|cut:' ' }}{% if menuitem.active %} active{% endif %}" href="{% pageurl menuitem %}" role="menuitem">{{ menuitem.title }}</a>
+        <a class="nav__link {{ menuitem.title|lower|cut:' ' }}{% if menuitem.active %} nav__link--active{% endif %}" role="menuitem" href="{% pageurl menuitem %}">
+            {% comment %} <div class="nav__div"> {% endcomment %}
+               {{ menuitem.title }}
+            {% comment %} </div>     {% endcomment %}
+        </a> 
     {% endif %}
 {% endfor %}

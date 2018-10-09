@@ -1,8 +1,15 @@
 {% load i18n %}
+{% load sekizai_tags %}
+{% load sass_tags %}
 {% get_current_language as LANGUAGE_CODE %}
 
+
 {% if LANGUAGE_CODE == 'en' %}
-    <h2 class="divider-block">{{ self.message }}</h2>
+    <div class="divider-block">
+        <h2>{{ self.message }}</h2>
+    </div>
 {% else %}
-    <h2 class="divider-block">{{ self.message_es }}</h2>
+    <div class="divider-block">
+        <h2>{{ self.message_es }}</h2>
+    </div>
 {% endif %}

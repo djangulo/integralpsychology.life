@@ -1,0 +1,18 @@
+.main {
+    grid-area: main;
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(50px, 6em) repeat(3, 1fr) minmax(50px, 6em);
+    grid-template-areas:
+    "hero hero hero hero hero"
+    ". body body body ."
+    ". form form form ."
+}
+
+.page-body {
+    grid-area: body;
+}
+
+.form {
+    grid-area: form
+}

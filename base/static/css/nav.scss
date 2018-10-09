@@ -1,0 +1,21 @@
+.header {
+    display: block;
+}
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    @at-root #{&}__logo {
+        align-self: flex-start;
+        flex-basis: 1;
+    }
+    @at-root #{&}__links {
+        width: 60%;
+        display: flex;
+        align-self: flex-end;
+        justify-content: space-around;
+        flex-basis: 6em;
+    }
+}

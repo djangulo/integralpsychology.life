@@ -1,0 +1,26 @@
+.main {
+    grid-area: main;
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(50px, 6em) repeat(3, 1fr) minmax(50px, 6em);
+    grid-template-areas:
+    "hero hero hero hero hero"
+    ". f1 f1 f1 ."
+    ". body body body ."
+    ". f2 f2 f2 ."
+    ". f3 f3 f3 .";
+}
+
+.page-body {
+    grid-area: body;
+}
+
+.featured:nth-child(1n) {
+    grid-area: f1;
+}
+.featured:nth-child(2n) {
+    grid-area: f2;
+}
+.featured:nth-child(3n) {
+    grid-area: f3;
+}

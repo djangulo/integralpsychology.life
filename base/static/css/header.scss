@@ -1,0 +1,49 @@
+@import './variables';
+
+.header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    height: $header-height;
+    background-color: white;
+    @at-root #{&}__logo {
+        align-self: flex-start;
+        align-content: center;
+        text-indent: -9999px;
+        height: $header-height;
+        width: 240px;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    @at-root #{&}__image {
+        position: absolute;
+    }
+    .nav {
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: 50%;
+        height: $header-height;
+        text-align: center;
+        @at-root #{&}__link{
+            box-sizing: border-box;
+            min-width: 7em;
+            padding: $header-height / 3;
+            height: $header-height;
+            &:hover {
+                border-bottom: 4px solid $colors-s-dark;
+            }
+        }
+        // @at-root #{&}__link{
+        //     margin: auto;
+        // }
+    }
+}
+
+
+.nav__link--active {
+    border-bottom: 4px solid $colors-s-dark;
+}

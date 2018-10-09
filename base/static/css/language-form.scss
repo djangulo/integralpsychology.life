@@ -1,0 +1,9 @@
+@import './variables';
+
+.language-form {
+    @at-root #{&}__languages {
+    }
+}
+.language--selected {
+    @include disabledElement
+}

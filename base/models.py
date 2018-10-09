@@ -1,5 +1,7 @@
+from django import forms
 from django.db import models
-from modelcluster.fields import ParentalKey
+from django.utils.translation import gettext_lazy as _
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.models import ClusterableModel
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -41,8 +43,17 @@ class People(index.Indexed, ClusterableModel):
     first_name = models.CharField("First name", max_length=254)
     last_name = models.CharField("Last name", max_length=254)
     job_title = models.CharField("Job title", max_length=254)
+    bio = models.TextField(blank=True, null=True)
+    # display_in_page = models.BooleanField(default=False)
+    social_linkedin = models.URLField(blank=True, null=True)
+    social_github = models.URLField(blank=True, null=True)
+    social_facebook = models.URLField(blank=True, null=True)
+    social_instagram = models.URLField(blank=True, null=True)
+    social_googleplus = models.URLField(blank=True, null=True)
+    social_twitter = models.URLField(blank=True, null=True)
 
-    image = models.ForeignKey(
+
+    picture = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -51,14 +62,23 @@ class People(index.Indexed, ClusterableModel):
     )
 
     panels = [
+        ImageChooserPanel('picture'),
         MultiFieldPanel([
             FieldRowPanel([
                 FieldPanel('first_name', classname="col6"),
                 FieldPanel('last_name', classname="col6"),
             ])
-        ], "Name"),
+        ], _("Name")),
         FieldPanel('job_title'),
-        ImageChooserPanel('image')
+        FieldPanel('bio'),
+        MultiFieldPanel([
+            FieldPanel('social_linkedin'),
+            FieldPanel('social_facebook'),
+            FieldPanel('social_instagram'),
+            FieldPanel('social_twitter'),
+            FieldPanel('social_github'),
+            FieldPanel('social_googleplus'),
+        ], _('Social links'))
     ]
 
     search_fields = [
@@ -71,6 +91,7 @@ class People(index.Indexed, ClusterableModel):
         # Returns an empty string if there is no profile pic or the rendition
         # file can't be found.
         try:
+            # pylint: disable=E1101
             return self.image.get_rendition('fill-50x50').img_tag()
         except:
             return ''
@@ -81,6 +102,30 @@ class People(index.Indexed, ClusterableModel):
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
+
+
+class PeopleIndexPage(Page):
+    introduction = RichTextField(blank=True)
+    people = ParentalManyToManyField('People', blank=True)
+    
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Homepage image'
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel('introduction'),
+        FieldPanel('people', widget=forms.CheckboxSelectMultiple),
+    ]
+    subpage_types = []
+    parent_page_types = ['HomePage']
+
+
+# class PeopleDetailPage(Page):
 
 
 @register_snippet

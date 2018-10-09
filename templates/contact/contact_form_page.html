@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% load sekizai_tags %}
+{% load sass_tags %}
 {% load recaptcha2 %}
 
-{% block head-extras %}
-{% endblock %}
 
 {% block content %}
+{% addtoblock "css" %}
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'css/form-page.scss' %}">
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'css/form.scss' %}">
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'css/contact-form.scss' %}">
+{% endaddtoblock %}
 {% include "base/include/header-hero.html" %}
 
-<div class="container">
+
+<section class="page-body">
     <div class="row">
         <div class="col-md-8">
             {% if page.intro %}
@@ -19,9 +25,9 @@
             {% endif %}
         </div>
     </div>
-</div>
+</section>
 
-<div class="container">
+<section class="form contact-form">
     <div class="row">
         <div class="col-md-8 form-page">
         {% comment %}
@@ -56,5 +62,5 @@
             </form>
         </div>
     </div>
-</div>
+</section>
 {% endblock content %}

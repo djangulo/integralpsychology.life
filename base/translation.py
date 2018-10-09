@@ -4,6 +4,7 @@ from .models import (
     FooterText,
     StandardPage,
     People,
+    PeopleIndexPage,
     HomePage,
 )
 from modeltranslation.translator import TranslationOptions
@@ -12,11 +13,15 @@ from modeltranslation.decorators import register
 
 @register(People)
 class PeopleTR(TranslationOptions):
-    fields = ('job_title',)
+    fields = ('job_title', 'bio')
 
 
 @register(StandardPage)
 class StandardPageTR(TranslationOptions):
+    fields = ('introduction',)
+
+@register(PeopleIndexPage)
+class PeopleIndexPageTR(TranslationOptions):
     fields = ('introduction',)
 
 

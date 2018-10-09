@@ -1,0 +1,28 @@
+// Get all definitions in hex
+$body-background: #ffffff;
+$gray-text: #444444;
+$light-orange: #ffe5e5;
+$light-green: #ccfefe;
+
+
+//colors
+$colors-p-normal: #757575;
+$colors-p-light: #a4a4a4;
+$colors-p-dark: #494949;
+$colors-s-normal: #ff8a65;
+$colors-s-light: #ffbb93;
+$colors-s-dark: #c75b39;
+$colors-text-p: #ffffff;
+$colors-text-s: #000000;
+$colors-text-acc: #000000;
+$colors-text-gray: #444444;
+
+@mixin disabledElement() {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: #777777;
+}
+
+// layout crazyness
+$header-height: 4em;
