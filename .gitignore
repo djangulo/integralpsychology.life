@@ -113,8 +113,9 @@ secrets.py
 # brand specific stuff
 *branding/
 
-# don't clutter the repo
+# don't clutter the repo with the compiled static or media
 static/
+!/*/static/
 media/
 
 # temporarily ignore migrations until deployement
