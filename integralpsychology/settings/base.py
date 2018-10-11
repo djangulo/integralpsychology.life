@@ -216,3 +216,4 @@ CACHES = {
 
 # Django-sass settings
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
+# SASS_OUTPUT_STYLE = 'compressed'
