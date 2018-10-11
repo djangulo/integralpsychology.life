@@ -1,51 +1,105 @@
+/** Email mask generator */
 class EmailMask {
-  constructor(fieldId) {
-    this.field = document.getElementById(fieldId);
-    this.curVal = this.field.value;
-    this.div = document.querySelector('.field-wrapper[for="email"]')
+  /**
+   * @constructor
+   * @param {string} fieldId - ID or name of input field to attach to
+   * @param {Object} opts - Options object to pass to class.
+   * Rest of the options defined below:
+   * @param {string} wrapperAttr - HTML attr on which to select the wrapping
+   * element with
+   * @default['for']
+   * @param {string} wrapperDataAttr - HTML on which to store the non-intrusive
+   * placeholder data.
+   * @default['data-placeholder']
+   * @param {string} fieldAttr - HTML attr on which to select the wrapping
+   * element with
+   * @default['name']
+   * @param {boolean} intrusive - Determines whether the mask will be actual
+   * input on the input field or a pseudo-element mask guide.
+   * @default[false]
+   * @param {string} maskPlaceholder - placeholder character to use in non-
+   * intrusive mask
+   * @default['_']
+   * @param {string} maskColor - Font color for the mask
+   * @default['#a4a4a4']
+   */
+  constructor(
+    fieldId,
+    opts
+  ) {
+    this.field =  document.getElementById(fieldId)
+               || document.querySelector(`input[name="${fieldId}]`);
+    if (opts) {
+      this.opts = {
+        wrapperClass: opts.wrapperClass || this.defaults.wrapperClass,
+        wrapperAttr: opts.wrapperAttr || this.defaults.wrapperAttr,
+        wrapperDataAttr: opts.wrapperDataAttr || this.defaults.wrapperDataAttr,
+        fieldAttr: opts.fieldAttr || this.defaults.fieldAttr,
+        intrusive: opts.intrusive || this.defaults.intrusive,
+        maskPlaceholder: opts.maskPlaceholder || this.defaults.maskPlaceholder,
+        maskColor: opts.maskColor || this.defaults.maskColor,
+        textColor: opts.textColor || this.defaults.textColor
+      };
+    } else {
+      this.opts = this.defaults;
+    }
+    this.setWrapper();
     this.style = document.head.appendChild(document.createElement("style"));
+    this.addKeyupHandler();
+    this.addFocusHandler();
+    this.addBlurHandler();
   }
-  prepend(str, char) {
-    return char + str;
+  setWrapper() {
+    const wc = this.opts.wrapperClass;
+    const wa = this.opts.wrapperAttr;
+    const fa = this.opts.fieldAttr;
+    const getA = this.field.getAttribute(`${fa}`)
+    this.wrapper = document.querySelector(`.${wc}[${wa}=${getA}]`)
   }
-  append(str, char) {
-    return str + char;
-  }
-  insert(str, char, pos) {
-    let pre = str.slice(0, pos);
-    let post = str.slice(pos);
-    return pre + char + post;
-  }
-  delChar(str, pos) {
-    let pre = str.slice(0, pos-1);
-    let post = str.slice(pos);
-    return pre + post;
+  get defaults() {
+    return {
+      wrapperClass: 'field-wrapper',
+      wrapperAttr: 'for',
+      wrapperDataAttr: 'data-placeholder',
+      fieldAttr: 'name',
+      intrusive: false,
+      maskPlaceholder: '_',
+      maskColor: '#a4a4a4',
+      textColor: '#444444'
+    }
   }
   get value() {
-    this.field.value;
+    return this.field.value;
+  }
+  set value(val) {
+    this.field.value = val;
   }
   get user() {
-    if (this.curVal.includes('@')) {
-      return this.curVal.split('@')[0];
-    } else {
-      return this.curVal;
+    if (this.value && this.value.includes('@')) {
+      return this.value.split('@')[0];
+    } else if (this.value) {
+      return this.value;
     }
+    return ''
   }
   get mailServer() {
     const rex = new RegExp("@((?:[a-z\\d-]+)+)[\\.]?", "i");
-    if (rex.test(this.curVal)) {
-      return this.curVal.match(rex)[1];
+    if (rex.test(this.value)) {
+      return this.value.match(rex)[1];
     } else {
       return undefined;
     }
   }
-  get tdl() {
-    const rex = new RegExp("^([a-z\\d._%-]+)@((?:[a-z\\d-]+\\.)+)([a-z]{2,6})$", "i");
-    if (this.curVal.split('').includes('@')) {
-      return this.curVal.match(rex)[3];
+  get tld() {
+    const rex = new RegExp("@(?:[a-z\\d-]+\\.)+([a-z]{2,10})$", "i");
+    if (rex.test(this.value)) {
+      return this.value.match(rex)[1];
     } else {
       return undefined;
     }
+  }
+  get fullMask() {
+    return `${this.replaceUser()}${this.replaceServer()}${this.replaceTld()}`;
   }
   attachListener(event, fn, el=null) {
     if (el === null) {
@@ -61,69 +115,59 @@ class EmailMask {
       el.removeEventListener(event);
     }
   }
-  updateVal(val) {
-    this.curVal = val;
-  }
-  replaceUserName() {
-    if (this.curVal === '') {
-      return '_';
+  replaceUser(intrusive=false) {
+    if (this.value === '') {
+      return this.opts.maskPlaceholder;
     }
-    const str = '_'.repeat(this.user.length);
-    const dataDescr = this.div.getAttribute('data-descr');
-    return str;
+    return this.opts.maskPlaceholder.repeat(this.user.length);
   }
-  replaceMailSever() {
-    // const rex = new RegExp("@((?:[_]+)+)\\.", "i");
-    // let dataDescr = this.div.getAttribute('data-descr');
+  replaceServer(intrusive=false) {
     if (this.mailServer !== undefined) {
-      const str = '_'.repeat(this.mailServer.length);
-      // dataDescr = dataDescr.replace(dataDescr.match(rex)[0], '@'+str+'.')
-      return '@' + str + '.';
-      // return dataDescr.replace(this.mailServer, str);
+      return `@${this.opts.maskPlaceholder.repeat(this.mailServer.length)}.`;
     }
-    return '@_.';
+    return `@${this.opts.maskPlaceholder}.`;
   }
-  updateDataDescr() {
-    this.div.setAttribute('data-descr', this.replaceUserName() + this.replaceMailSever());
+  replaceTld(intrusive=false) {
+    if (this.tld !== undefined) {
+      return this.opts.maskPlaceholder.repeat(this.tld.length);
+    }
+    return this.opts.maskPlaceholder;
+  }
+  updateDataPlaceholder() {
+    this.wrapper.setAttribute(this.opts.wrapperDataAttr, this.fullMask);
+  }
+  addKeyupHandler() {
+    this.attachListener('keyup', ev => {
+      this.updateDataPlaceholder()
+    });
+  }
+  addFocusHandler() {
+    this.attachListener('focus', ev => {
+      const wc = this.opts.wrapperClass;
+      const wa = this.opts.wrapperAttr;
+      const fa = this.opts.fieldAttr;
+      const mc = this.opts.maskColor;
+      const getA = this.field.getAttribute(`${this.opts.fieldAttr}`);
+      this.style.innerHTML = `.${wc}[${wa}="${getA}"]:before {
+          color: ${mc};
+        }`;
+      this.style.innerHTML += `\ninput[${fa}="${getA}"]::placeholder {
+        color: transparent;
+      }`;
+    });
+  }
+  addBlurHandler() {
+    this.attachListener('blur', ev => {
+      const fa = this.opts.fieldAttr;
+      const getA = this.field.getAttribute(`${this.opts.fieldAttr}`);
+      if(this.value === '' || this.value === undefined) {
+        this.style.innerHTML = '';//`input[${fa}="${getA}"]::placeholder {
+        //   color: ${this.opts.textColor};
+        // }`;;
+      }
+    });
   }
 }
-(document.addEventListener('DOMContentLoaded', function() {
-  // const phoneDiv = document.querySelector('.field-wrapper[for="phone"]')
-  // const phoneInput = document.getElementById('id_phone');
-  // const phoneStyle = document.head.appendChild(document.createElement("style"));
+document.addEventListener('DOMContentLoaded', function() {
   const em = new EmailMask('id_email');
-  em.attachListener('keyup', (ev) => {
-    em.updateVal(em.field.value);
-    // em.replaceUserName();
-    em.updateDataDescr();
-    // console.log(em.mailServer);
-  });
-  em.attachListener('focus', function() {
-    em.style.innerHTML = ".field-wrapper[for='email']:before {color: #a4a4a4;}";
-    em.style.innerHTML += "input[type='email']::placeholder {color: transparent;}";
-  });
-  em.attachListener('blur', function() {
-    if(em.curVal === '') {
-      em.style.innerHTML = '';
-    }
-  });
-}))();
-
-// emailInput.onkeyup = function(ev) {
-//   const key = ev.key;
-//   const val = getValue(this).value;
-//   const len = getValue(this).length;
-//   const s = val.split('');
-//   let dataDescr = emailDiv.getAttribute('data-descr');
-//   if (len > 1 && !(s.includes('@'))) {
-//     dataDescr = prepend(dataDescr, '_');
-//     emailDiv.setAttribute('data-descr', dataDescr);
-//   } else if (
-//       s.includes('@') &&
-//       s.slice(s.indexOf('@')+1).length >=0
-//     ) {
-//     console.log(s.slice(s.indexOf('@')+1));
-//     dataDescr = insert(dataDescr, '_', s.indexOf('@')+1);
-//     emailDiv.setAttribute('data-descr', dataDescr);
-//   }
-// }
+});
