@@ -2,11 +2,12 @@
     grid-area: main;
     display: grid;
     width: 100%;
-    grid-template-columns: minmax(50px, 6em) repeat(3, 1fr) minmax(50px, 6em);
+    grid-template-columns: minmax(50px, 6em) repeat(4, 1fr) minmax(50px, 6em);
+    grid-template-rows: min-content minmax(50px, max-content) max-content;
     grid-template-areas:
-    "hero hero hero hero hero"
-    ". body body body ."
-    ". form form form ."
+    "hero hero hero hero hero hero"
+    ". . body body . ."
+    ". . form form . .";
 }
 
 .page-body {
@@ -14,5 +15,6 @@
 }
 
 .form {
-    grid-area: form
+    grid-area: form;
+    margin-top: 1em;
 }

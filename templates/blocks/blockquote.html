@@ -4,11 +4,15 @@
 
 <blockquote>
     <p class="text">
-        {% if LANGUAGE_CODE == 'en' %}
-            {{ self.text }}
-        {% else %}
-            {{ self.text_es }}
-        {% endif %}
+        {% comment %} <i class="fas fa-quote-left"></i> {% endcomment %}
+        <strong class="curly-quote open-curly-quote">&#8220; </strong>
+            {% if LANGUAGE_CODE == 'en' %}
+                {{ self.text }}
+            {% else %}
+                {{ self.text_es }}
+            {% endif %}
+        <strong class="curly-quote close-curly-quote"> &#8221;</strong>
+        {% comment %} <i class="fas fa-quote-right"></i> {% endcomment %}
     </p>
-<footer><p class="attribute_name">{{ self.attribute_name }}</p></footer>
+<footer><p class="attribute_name">&mdash; {{ self.attribute_name }}</p></footer>
 </blockquote>

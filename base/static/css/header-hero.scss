@@ -1,6 +1,6 @@
 @import './variables';
-$hero-min-height: 20vh;
-$hero-height: 20vh;
+$hero-min-height: 15vh;
+$hero-height: 15vh;
 .header-hero {
     box-sizing: border-box;
     grid-area: hero;
@@ -12,51 +12,46 @@ $hero-height: 20vh;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    display: flex;
-    flex-direction: column;
 }
 
 .header-hero__text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  h1, p, a {
-    color: $colors-s-dark;
-    z-index: 1;
-  }
-  h1 {
-      margin-left: 2em;
-  }
-  a{
-    color: $colors-s-dark;
-    text-decoration: underline;
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    h1, p, a {
+        color: $colors-s-dark;
+        z-index: 1;
+    }
+    h1 {
+        margin-left: 2em;
+    }
+    a{
+        color: $colors-s-dark;
+        text-decoration: underline;
+    }
 }
 
 .header-hero__gradient-mask {
-    position: absolute;
-    width: 100%;
-    height: $hero-height;
-    top: $header-height;
-    background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,1) 100%);
+    grid-area: hero;
     z-index: 0;
+    background: linear-gradient(to left,  hsla(0,0,0.29,0) 0%,hsla(0,0,0.29,1) 75%,hsla(0,0,0.29,1) 100%);
 }
 
 // .header-hero__h1 {
-//     color: #dddddd;
-// }
-
-// .header-hero__lead {
-//     color: #dddddd;
-//     font-size: 1.6em;
-//     margin: 40px;
-// }
-
-// .header-hero h1:after {
-//     background-color: rgba(255,255,255, 0.7);
-//     content: "";
-//     display: block;
-//     height: 5px;
-//     margin: 20px auto;
-//     width: 250px;
-//   }
+    //     color: #dddddd;
+    // }
+    
+    // .header-hero__lead {
+        //     color: #dddddd;
+        //     font-size: 1.6em;
+        //     margin: 40px;
+        // }
+        
+        // .header-hero h1:after {
+            //     background-color: rgba(255,255,255, 0.7);
+            //     content: "";
+            //     display: block;
+            //     height: 5px;
+            //     margin: 20px auto;
+            //     width: 250px;
+            //   }

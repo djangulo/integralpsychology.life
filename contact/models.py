@@ -32,14 +32,8 @@ class Contact(index.Indexed, ClusterableModel):
     """
     Django model to store Contact objects (related to contact form).
     """
-    first_names = models.CharField(
+    name = models.CharField(
         verbose_name=_('First name(s)'),
-        max_length=254,
-        blank=False,
-        null=False,
-    )
-    last_names = models.CharField(
-        verbose_name=_('Last name(s)'),
         max_length=254,
         blank=False,
         null=False,
@@ -87,6 +81,7 @@ class ContactMessage(AbstractFormSubmission):
         null=True,
         related_name='messages',
     )
+    subject = models.CharField(verbose_name=_('Subject'), max_length=254)
     message = models.TextField(verbose_name=_('Message'))
 
     class Meta:
@@ -100,7 +95,7 @@ class ContactCaptchaFormField(AbstractFormField):
     # extend the built in field type choices
     # our field type key will be 'ipaddress'
     CHOICES = FORM_FIELD_CHOICES + (('recaptchav2', 'Google Recaptcha V2'),)
-
+    placeholder = models.CharField(verbose_name=_('placeholder'), max_length=255, blank=True)
     page = ParentalKey('ContactFormPage', related_name='form_fields')
     # override the field_type field with extended choices
     field_type = models.CharField(
@@ -108,6 +103,75 @@ class ContactCaptchaFormField(AbstractFormField):
         max_length=16,
         choices=CHOICES,
     )
+    additional_classes = models.CharField(
+        verbose_name=_('additional classes'),
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text='Comma separated list of html classes to pass on to '\
+                  'the input element.'
+    )
+    additional_attrs = models.CharField(
+        verbose_name=_('additional attributes'),
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text=_('Comma separated list of key-value pairs to add '\
+                    'to the input element. Quotes are not'\
+                    ' necessary.\n'\
+                    'e.g. data-toggle=dropdown,aria-haspopup=true')\
+    )
+
+
+    def __str__(self):
+        return self.label
+
+
+CONTACT_CONST = {
+    'name': {
+        'label': 'Name',
+        'label_es': 'Nombre',
+        'placeholder': 'Name',
+        'placeholder_es': 'Nombre',
+        'attrs': 'title=your name'
+    },
+    'email': {
+        'label': 'Email',
+        'label_es': 'Correo electrónico',
+        'placeholder': 'Email',
+        'placeholder_es': 'Correo electrónico',
+        'attrs': 'title=email address,data-charset=_@_._',
+    },
+    'phone': {
+        'label': 'Phone',
+        'label_es': 'Teléfono',
+        'placeholder': 'Phone',
+        'placeholder_es': 'Teléfono',
+        'attrs': 'pattern=(\\d{3})\\d{3}-\\d{4},data-charset=(000)000-0000,type=tel,title=10 digit phone number'
+    },
+    'sub': {
+        'label': 'Subject',
+        'label_es': 'Asunto',
+        'placeholder': 'Subject',
+        'placeholder_es': 'Asunto',
+        'attrs': 'title=message subject',
+    },
+    'msg': {
+        'label': 'Message',
+        'label_es': 'Mensaje',
+        'placeholder': 'Message',
+        'placeholder_es': 'Mensaje',
+        'attrs': 'title=message body',
+    }
+}
+# CONTACT_CONST['email']['placeholder'] = '%(f)s.%(l)s@example.com' % {
+#     'f': CONTACT_CONST['fname']['placeholder'].lower(),
+#     'l': CONTACT_CONST['lname']['placeholder'].lower(),
+# }
+# CONTACT_CONST['email']['placeholder_es'] = '%(f)s.%(l)s@ejemplo.com' % {
+#     'f': CONTACT_CONST['fname']['placeholder_es'].lower(),
+#     'l': CONTACT_CONST['lname']['placeholder_es'].lower(),
+# }
 
 
 class ContactFormPage(AbstractEmailForm):
@@ -152,12 +216,12 @@ class ContactFormPage(AbstractEmailForm):
         """
         keys = list(form.cleaned_data.keys()) # Original keys
         fields = [
-            ['first-names', keys[0]],
-            ['last-names', keys[1]],
-            ['email', keys[2]],
-            ['phone', keys[3]],
+            ['name', keys[0]],
+            ['email', keys[1]],
+            ['phone', keys[2]],
+            ['subject', keys[3]],
             ['message', keys[4]],
-            ['are-you-a-robot', keys[5]],
+            ['captcha', keys[5]],
         ]
         res = []
         for f in fields:
@@ -174,8 +238,7 @@ class ContactFormPage(AbstractEmailForm):
             contact = Contact.objects.get(email=cleaned_data['email'])
         except Contact.DoesNotExist:
             contact = Contact.objects.create(
-                first_names=cleaned_data['first-names'],
-                last_names=cleaned_data['last-names'],
+                names=cleaned_data['name'],
                 email=cleaned_data['email'],
                 phone=cleaned_data['phone'],
             )
@@ -199,9 +262,8 @@ class ContactFormPage(AbstractEmailForm):
             content.append('{}: {}'.format(field.label, value))
 
         content = '\n'.join(content)
-        subject = "Message from: %(fname)s %(lname)s <%(email)s>" % {
-            'fname': cleaned_data['first-names'],
-            'lname': cleaned_data['last-names'],
+        subject = "Message from: %(name)s <%(email)s>" % {
+            'name': cleaned_data['name'],
             'email': cleaned_data['email'],
         }
         send_mail(subject, content, addresses, self.from_address,)
@@ -211,42 +273,57 @@ class ContactFormPage(AbstractEmailForm):
         field_list = list(
             self.form_fields.all().values_list('label', flat=True)
         )
-        if 'First name(s)' not in field_list:
+        if CONTACT_CONST['name']['label'] not in field_list:
             ContactCaptchaFormField.objects.create(
-                label='First name(s)',
-                label_es='Nombre(s)',
+                label=CONTACT_CONST['name']['label'],
+                label_es=CONTACT_CONST['name']['label_es'],
+                placeholder=CONTACT_CONST['name']['placeholder'],
+                placeholder_es=CONTACT_CONST['name']['placeholder_es'],
                 field_type='singleline',
+                additional_attrs=CONTACT_CONST['name']['attrs'],
                 required=True,
                 page=self
             )
-        if 'Last name(s)' not in field_list:
+        if CONTACT_CONST['email']['label'] not in field_list:
             ContactCaptchaFormField.objects.create(
-                label='Last name(s)',
-                label_es='Apellido(s)',
-                field_type='singleline',
-                required=True,
-                page=self
-            )
-        if 'Email' not in field_list:
-            ContactCaptchaFormField.objects.create(
-                label='Email',
-                label_es='Correo electrónico',
+                label=CONTACT_CONST['email']['label'],
+                label_es=CONTACT_CONST['email']['label_es'],
+                placeholder=CONTACT_CONST['email']['placeholder'],
+                placeholder_es=CONTACT_CONST['email']['placeholder_es'],
+                additional_attrs=CONTACT_CONST['email']['attrs'],
                 field_type='email',
                 required=True,
                 page=self,
             )
-        if 'Phone' not in field_list:
+        if CONTACT_CONST['phone']['label'] not in field_list:
             ContactCaptchaFormField.objects.create(
-                label='Phone',
-                label_es='Teléfono',
+                label=CONTACT_CONST['phone']['label'],
+                label_es=CONTACT_CONST['phone']['label_es'],
+                placeholder=CONTACT_CONST['phone']['placeholder'],
+                placeholder_es=CONTACT_CONST['phone']['placeholder_es'],
+                additional_attrs=CONTACT_CONST['phone']['attrs'],
                 field_type='singleline',
                 required=False,
                 page=self,
             )
-        if 'Message' not in field_list:
+        if CONTACT_CONST['sub']['label'] not in field_list:
             ContactCaptchaFormField.objects.create(
-                label='Message',
-                label_es='Mensaje',
+                label=CONTACT_CONST['sub']['label'],
+                label_es=CONTACT_CONST['sub']['label_es'],
+                placeholder=CONTACT_CONST['sub']['placeholder'],
+                placeholder_es=CONTACT_CONST['sub']['placeholder_es'],
+                additional_attrs=CONTACT_CONST['sub']['attrs'],
+                field_type='singleline',
+                required=True,
+                page=self,
+            )
+        if CONTACT_CONST['msg']['label'] not in field_list:
+            ContactCaptchaFormField.objects.create(
+                label=CONTACT_CONST['msg']['label'],
+                label_es=CONTACT_CONST['msg']['label_es'],
+                placeholder=CONTACT_CONST['msg']['placeholder'],
+                placeholder_es=CONTACT_CONST['msg']['placeholder_es'],
+                additional_attrs=CONTACT_CONST['msg']['attrs'],
                 field_type='multiline',
                 required=True,
                 page=self,
@@ -255,8 +332,8 @@ class ContactFormPage(AbstractEmailForm):
             self.form_fields.all().values_list('field_type', flat=True)
         ):
             ContactCaptchaFormField.objects.create(
-                label='',
-                label_es='',
+                label='captcha',
+                label_es='captcha',
                 field_type='recaptchav2',
                 required=True,
                 page=self,

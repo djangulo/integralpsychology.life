@@ -2,30 +2,28 @@
 {% load sass_tags %}
 {% load sekizai_tags %}
 
-
 {% addtoblock "css" %}
-    <link type="text/css" rel="stylesheet" href="{% sass_src 'css/header-hero.scss' %}">
+<link type="text/css" rel="stylesheet" href="{% sass_src 'css/header-hero.scss' %}">
 {% endaddtoblock %}
 
-
 {% if page.image %}
-    {% image page.image fill-1920x600 as image %}
-    <div class="header-hero" style="background-image:url('{{ image.url }}')">
-        <div class="header-hero__gradient-mask"></div>
-        <div class="header-hero__text">
-            <h1>{{ page.title }}</h1>
-            {% if page.subtitle %}
-                <p class="stand-first">{{ page.subtitle }}</p>
-            {% endif %}
-        </div>
-    </div>
+{% image page.image fill-1920x1200 as image %}
+<div class="header-hero__gradient-mask"></div>
+<div class="header-hero" style="background-image:url('{{ image.url }}')">
+  <div class="header-hero__text">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}
+    <p class="stand-first">{{ page.subtitle }}</p>
+    {% endif %}
+  </div>
+</div>
 {% else %}
-    <div class="header-hero">
-        <div class="header-hero__text">
-            <h1>{{ page.title }}</h1>
-            {% if page.subtitle %}
-                <p class="stand-first">{{ page.subtitle }}</p>
-            {% endif %}
-        </div>
-    </div>
+<div class="header-hero">
+  <div class="header-hero__text">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}
+    <p class="stand-first">{{ page.subtitle }}</p>
+    {% endif %}
+  </div>
+</div>
 {% endif %}

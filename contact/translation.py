@@ -24,4 +24,4 @@ class ContactFormPageTR(TranslationOptions):
 
 @register(ContactCaptchaFormField)
 class ContactCaptchaFormFieldTR(TranslationOptions):
-    fields = ('label',)
+    fields = ('label', 'placeholder',)

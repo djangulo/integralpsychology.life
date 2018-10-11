@@ -12,7 +12,7 @@ from wagtail.admin.edit_handlers import (
     StreamFieldPanel,
 )
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Page
+from wagtail.core.models import Orderable, Page
 from wagtail.contrib.forms.models import (
     AbstractEmailForm,
     AbstractFormField,
@@ -337,52 +337,83 @@ class HomePage(Page):
         return True
 
 
-class FormField(AbstractFormField):
-    """
-    Wagtailforms is a module to introduce simple forms on a Wagtail site. It
-    isn't intended as a replacement to Django's form support but as a quick way
-    to generate a general purpose data-collection form or contact form
-    without having to write code. We use it on the site for a contact form. You
-    can read more about Wagtail forms at:
-    http://docs.wagtail.io/en/latest/reference/contrib/forms/index.html
-    """
-    page = ParentalKey('FormPage', related_name='form_fields', on_delete=models.CASCADE)
+# class AbstractFormField(Orderable):
+#     """
+#     Database Fields required for building a Django Form field.
+#     """
 
+#     label = models.CharField(
+#         verbose_name=_('label'),
+#         max_length=255,
+#         help_text=_('The label of the form field')
+#     )
+#     field_type = models.CharField(verbose_name=_('field type'), max_length=16, choices=FORM_FIELD_CHOICES)
+#     required = models.BooleanField(verbose_name=_('required'), default=True)
+#     choices = models.TextField(
+#         verbose_name=_('choices'),
+#         blank=True,
+#         help_text=_('Comma separated list of choices. Only applicable in checkboxes, radio and dropdown.')
+#     )
+#     default_value = models.CharField(
+#         verbose_name=_('default value'),
+#         max_length=255,
+#         blank=True,
+#         help_text=_('Default value. Comma separated values supported for checkboxes.')
+#     )
+#     help_text = models.CharField(verbose_name=_('help text'), max_length=255, blank=True)
 
-class FormPage(AbstractEmailForm):
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    body = StreamField(BaseStreamBlock())
-    thank_you_text = RichTextField(blank=True)
+#     @property
+#     def clean_name(self):
+#         # unidecode will return an ascii string while slugify wants a
+#         # unicode string on the other hand, slugify returns a safe-string
+#         # which will be converted to a normal str
+#         return str(slugify(str(unidecode(self.label))))
 
-    # Note how we include the FormField object via an InlinePanel using the
-    # related_name value
-    content_panels = AbstractEmailForm.content_panels + [
-        ImageChooserPanel('image'),
-        StreamFieldPanel('body'),
-        InlinePanel('form_fields', label="Form fields"),
-        FieldPanel('thank_you_text', classname="full"),
-        MultiFieldPanel([
-            FieldRowPanel([
-                FieldPanel('from_address', classname="col6"),
-                FieldPanel('to_address', classname="col6"),
-            ]),
-            FieldPanel('subject'),
-        ], "Email"),
-    ]
+#     panels = [
+#         FieldPanel('label'),
+#         FieldPanel('help_text'),
+#         FieldPanel('required'),
+#         FieldPanel('field_type', classname="formbuilder-type"),
+#         FieldPanel('choices', classname="formbuilder-choices"),
+#         FieldPanel('default_value', classname="formbuilder-default"),
+#     ]
+
+#     class Meta:
+#         abstract = True
+#         ordering = ['sort_order']
 
 class CaptchaFormField(AbstractFormField):
     # extend the built in field type choices
     # our field type key will be 'ipaddress'
     CHOICES = FORM_FIELD_CHOICES + (('recaptchav2', 'Google Recaptcha V2'),)
 
-    page = ParentalKey('CaptchaFormPage', related_name='form_fields')
+    page = ParentalKey('FormPage', related_name='form_fields')
+    placeholder = models.CharField(
+        verbose_name=_('placeholder'),
+        max_length=254,
+        blank=True,
+        help_text=_('Placeholder text. This takes precedence over a '\
+                  'placeholder set in additional_attrs.')
+    )
     # override the field_type field with extended choices
+    additional_classes = models.CharField(
+        verbose_name=_('additional classes'),
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text='Comma separated list of html classes to pass on to '\
+                  'the input element.'
+    )
+    additional_attrs = models.CharField(
+        verbose_name=_('additional attributes'),
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text=_('Comma separated list of key-value pairs to add '\
+                    'to the input element. Quotes are not'\
+                    ' necessary.\n'\
+                    'e.g. data-toggle=dropdown,aria-haspopup=true')\
+    )
     field_type = models.CharField(
         verbose_name='field type',
         max_length=16,
@@ -390,7 +421,23 @@ class CaptchaFormField(AbstractFormField):
         choices=CHOICES
     )
 
-class CaptchaFormPage(AbstractEmailForm):
+    panels = [
+        MultiFieldPanel([
+            FieldPanel('label'),
+        ], _('Label')),
+        FieldPanel('help_text'),
+        FieldPanel('placeholder'),
+        FieldPanel('required'),
+        FieldPanel('field_type', classname="formbuilder-type"),
+        FieldPanel('choices', classname="formbuilder-choices"),
+        FieldPanel('default_value', classname="formbuilder-default"),
+        MultiFieldPanel([
+            FieldPanel('additional_classes'),
+            FieldPanel('additional_attrs'),
+        ], _('Developer options')),
+    ]
+
+class FormPage(AbstractEmailForm):
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,

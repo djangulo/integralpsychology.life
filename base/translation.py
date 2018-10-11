@@ -1,5 +1,7 @@
+from modeltranslation.translator import TranslationOptions
+from modeltranslation.decorators import register
 from .models import (
-    CaptchaFormPage,
+    CaptchaFormField,
     FormPage,
     FooterText,
     StandardPage,
@@ -7,8 +9,6 @@ from .models import (
     PeopleIndexPage,
     HomePage,
 )
-from modeltranslation.translator import TranslationOptions
-from modeltranslation.decorators import register
 
 
 @register(People)
@@ -33,16 +33,12 @@ class FooterTextTR(TranslationOptions):
 @register(FormPage)
 class FormPageTR(TranslationOptions):
     fields = (
-        'body',
         'thank_you_text',
     )
 
-@register(CaptchaFormPage)
-class CaptchaFormPageTR(TranslationOptions):
-    fields = (
-        'thank_you_text',
-    )
-
+@register(CaptchaFormField)
+class CaptchaFormFieldTR(TranslationOptions):
+    fields = ('label', 'placeholder',)
 
 @register(HomePage)
 class HomePageTR(TranslationOptions):
