@@ -10,23 +10,20 @@ from wagtail.contrib.forms.models import (
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
+def get_suffixed_string(string):
+    """
+    Returns an empty string if language is the default one,
+    otherwise returns the actual language string (to be used in
+    getattr).
+    """
+    if get_language() == settings.LANGUAGE_CODE:
+        return string
+    return '%s_%s' % (string,get_language(),)
+
 
 class CaptchaFormBuilder(FormBuilder):
     # create a function that returns an instanced Django form field
     # function name must match create_<field_type_key>_field
-
-    def _get_language_suffix(self):
-        """
-        Returns an empty string if language is the default one,
-        otherwise returns the actual language string (to be used in
-        getattr).
-        """
-        if get_language() == settings.LANGUAGE_CODE:
-            return ''
-        return '_%s' % get_language()
-
-    def _get_suffixed_string(self, s):
-        return '%s%s' % (s,self._get_language_suffix(),)
 
     def _get_attrs_dict(self, field):
         if field.additional_attrs is not None:
@@ -60,10 +57,10 @@ class CaptchaFormBuilder(FormBuilder):
             dd[slugify(k)] = dd.pop(k)
 
         if field is not None:
-            if hasattr(field, self._get_suffixed_string('placeholder')):
+            if hasattr(field, get_suffixed_string('placeholder')):
                 dd['placeholder'] = getattr(
                     field,
-                    self._get_suffixed_string('placeholder'),
+                    get_suffixed_string('placeholder'),
                     ''
                 )
             else:

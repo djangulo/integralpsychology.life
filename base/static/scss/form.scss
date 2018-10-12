@@ -1,11 +1,5 @@
 @import './variables.scss';
 
-// .form {
-//     display: flex;
-//     flex-direction: row;
-//     flex-basis: 45%;
-// }
-
 $form-font-size: 1.5em;
 $form-input-height: 2em;
 
@@ -36,6 +30,10 @@ textarea {
     z-index: 1;
     font-family: monospace;
 }
+textarea {
+    height: $form-input-height * 2;
+}
+
 input:focus,
 textarea:focus {
     outline: none;
@@ -54,6 +52,12 @@ textarea:focus {
     z-index: 0;
     font-family: monospace;
     // visibility: hidden;
+}
+
+.field-wrapper[for='captcha'] {
+    // align-items: flex-end;
+    // justify-items: center;
+    margin-top: 1em;
 }
 
 .pseudo--invisible {

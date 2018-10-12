@@ -1,0 +1,46 @@
+{% load base_extras %}
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load sass_tags %}
+{% load sekizai_tags %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% addtoblock "css" %}
+<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/icons/chevron.scss' %}">
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/aside.scss' %}">
+{% endaddtoblock %}
+
+{% addtoblock "js" %}
+  <script type="text/javascript" src="{% static 'vendor/es6-shim/es6-shim.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/collapse-menu.js' %}"></script>
+{% endaddtoblock %}
+
+  <div class="search">
+    {% include 'search/search_box.html' %}
+  </div>
+
+{% if dates %}
+  <div class="dates">
+    <h4>Filter by date:</h4>
+    {% for dict in dates %}
+      {% with year=dict|get_item:'year' months=dict|get_item:'months' %}
+       <div id="group-{{ year }}"class="year-group">
+         <button role="collapse" class="chevron chevron--right" data-group="months-{{ year }}"></button>
+         <a class="year-group__a" href="/{{ LANGUAGE_CODE }}/blog/date/{{ year }}/">
+          <div class="year-header">
+              {{ year }}
+          </div>
+        </a>
+        <div id="months-{{ year }}" class="month-group visible--false">
+          {% for month in months %}
+            <a href="/{{ LANGUAGE_CODE }}/blog/date/{{ year }}/{{ month }}/">
+              <div class="month">{{ month|humanize_month }}</div>
+            </a>
+          {% endfor %}
+        </div>
+       </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+{% endif %}

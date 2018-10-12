@@ -2,53 +2,55 @@
 {% load navigation_tags wagtailimages_tags  %}
 {% load wagtail_modeltranslation %}
 {% load i18n %}
+{% load sekizai_tags %}
+{% load sass_tags %}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block content %}
-
-    {% image self.image fill-1920x600 as hero_img %}
-        {% include "base/include/header-hero.html" %}
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                {% if page.introduction %}
-                    <p class="intro">{{ page.introduction }}</p>
-                {% endif %}
-
-                <div class="blog-meta">
-                    {% if page.authors %}
-                        <div class="blog-avatars">
-                            {% for author in page.authors %}
-                                <div class="author">{% image author.image fill-50x50-c100 class="blog-avatar" %}
-                                    {{ author.first_name }} {{ author.last_name }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if page.date_published %}
-                        <div class="blog-byline">
-                            {{ page.date_published }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                {{ page.body }}
-
-    {% for item in page.gallery_images.all %}
+  {% addtoblock "css" %}
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/blog-page.scss' %}">
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/icons/tag.scss' %}">
+  {% endaddtoblock %}
+  {% include "base/include/header-hero.html" %}
+  <div class="msg-container">
+    {% include "includes/messages.html" %}
+  </div>
+  <aside class="aside">
+    {% include 'includes/aside.html' %}
+  </aside>
+  <section class="page-body">
+    {% if page.introduction %}
+      <p class="intro">{{ page.introduction }}</p>
+    {% endif %}
+      
+      <div class="meta">
+        {% if page.authors %}
+          {% for author in page.authors %}
+          <div class="meta__author">
+            {% image author.picture fill-50x50-c100 class="meta__author__avatar" %}
+            <p class="meta__author__name">{{ author.first_name }} {{ author.last_name }}</p>
+          </div>
+          {% endfor %}
+          {% endif %}
+          
+          {% if page.date_published %}
+            <div class="blog-byline">
+              {{ page.date_published }}
+            </div>
+          {% endif %}
+        </div>
+        
+        {{ page.body }}
+        
+        {% for item in page.gallery_images.all %}
         <div style="float: left; margin: 10px">
-            {% image item.image fill-320x240 %}
-            <p>{{ item.caption }}</p>
+          {% image item.image fill-320x240 %}
+          <p>{{ item.caption }}</p>
         </div>
-    {% endfor %}
-        {% if page.tags_en.all.count %}
+        {% endfor %}
         <div class="tags">
-            <h3>{% trans "Tags" %}</h3>
-            {% for tag in page.get_tags %}
-                <a href="{{ tag.url}}"><button type="button">{{ tag }}</button></a>
-            {% endfor %}
+          {% include 'blog/tags.html' %}
         </div>
-        {% endif %}
-    <p><a href="{{ page.get_parent.url }}">{% trans "Return to blog" %}</a></p>
-
+        <p><a href="{{ page.get_parent.url }}">{% trans "Return to blog" %}</a></p>
+  </section>
 {% endblock %}

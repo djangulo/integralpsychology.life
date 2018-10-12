@@ -12,18 +12,17 @@ $hero-height: 15vh;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
 .header-hero__text {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    h1, p, a {
+    margin-left: 2em;
+    h1, h4, a {
         color: $colors-s-dark;
         z-index: 1;
-    }
-    h1 {
-        margin-left: 2em;
     }
     a{
         color: $colors-s-dark;

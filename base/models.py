@@ -156,7 +156,7 @@ class StandardPage(Page):
     image, introduction and body field
     """
 
-    introduction = models.TextField(
+    introduction = RichTextField(
         help_text='Text to describe the page',
         blank=True)
     image = models.ForeignKey(
@@ -171,9 +171,9 @@ class StandardPage(Page):
         BaseStreamBlock(), verbose_name="Page body", blank=True
     )
     content_panels = Page.content_panels + [
+        ImageChooserPanel('image'),
         FieldPanel('introduction', classname="full"),
         StreamFieldPanel('body'),
-        ImageChooserPanel('image'),
     ]
 
 

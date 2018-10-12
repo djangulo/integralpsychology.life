@@ -6,15 +6,9 @@
     grid-template-rows: min-content minmax(50px, max-content) max-content;
     grid-template-areas:
     "hero hero hero hero hero hero"
-    ". . body body . ."
-    ". . form form . .";
+    ". body body body body .";
 }
 
 .page-body {
     grid-area: body;
-}
-
-.form {
-    grid-area: form;
-    margin-top: 1em;
 }

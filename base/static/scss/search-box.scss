@@ -1,0 +1,52 @@
+@import './variables.scss';
+
+$form-font-size: 1.5em;
+$form-input-height: 2em;
+
+.field-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2em;
+    grid-template-rows: $form-input-height;
+}
+
+.search {
+    grid-column: 1 / 2;
+}
+.go {
+    grid-column: 2 / 3;
+}
+
+input:focus {
+    color: $colors-s-dark;
+}
+
+input {
+    box-sizing: border-box;
+    padding-bottom: 0;
+    align-self: center;
+    background-color: transparent;
+    color: $colors-text-gray;
+    font-size: $form-font-size;
+    height: $form-input-height;
+    border: none;
+    border-bottom-color: $colors-p-light;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    z-index: 1;
+    font-family: monospace;
+    display: inline-block;
+    margin: 0;
+}
+
+.search:focus {
+    outline: none;
+    border-bottom-color: $colors-s-dark;
+    border-bottom-width: 2px;
+}
+.go:hover {
+    outline: none;
+    border-bottom-color: $colors-s-dark;
+    border-bottom-width: 2px;
+    cursor: pointer;
+}

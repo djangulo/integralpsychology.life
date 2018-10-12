@@ -1,15 +1,13 @@
 {% load i18n %}
-<form action="{% url 'search' %}" class="form-inline search-form" method="get">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="input-group">
-                <input type="text" name="query" class="form-control" />
-                <div class="input-group-btn">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="glyphicon glyphicon-search"></i> {% trans "Search" %}
-                    </button>
-                </div>
-            </div>
-        </div>
+{% load sekizai_tags %}
+{% load sass_tags %}
+{% addtoblock "css" %}
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/search-box.scss' %}">
+{% endaddtoblock %}
+
+<form action="{% url 'search' %}" class="search-form" method="get">
+    <div class="field-wrapper" for="q">
+        <input type="text" name="q" class="search" placeholder="{% trans 'Search' %}"/>
+        <input class="go" type="submit" value="{% trans 'Go' %}">
     </div>
 </form>

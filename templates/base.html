@@ -44,7 +44,7 @@
     {% render_block "head-extra" %}
     
     <link type="text/css" rel="stylesheet" href="{% static 'css/normalize.css' %}">
-    <link type="text/css" rel="stylesheet" href="{% sass_src 'css/base.scss' %}">
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/base.scss' %}">
     {% render_block "css" %}
 </head>
     
@@ -55,10 +55,6 @@
     {% block header %}
         {% include "includes/header.html" with parent=site_root calling_page=self %}
     {% endblock header %}
-
-    {% block messages %}
-        {% include "includes/messages.html" %}
-    {% endblock messages %}
 
     {% block breadcrumbs %}
         {# breadcrumbs is defined in base/templatetags/navigation_tags.py #}
@@ -73,7 +69,7 @@
     <hr>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         {% include "includes/footer.html" %}
     </footer>
 

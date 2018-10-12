@@ -1,0 +1,25 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load sass_tags %}
+{% load sekizai_tags %}
+{% load i18n %}
+
+{% addtoblock "css" %}
+<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/tags.scss' %}">
+<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/icons/tag.scss' %}">
+{% endaddtoblock %}
+
+
+
+{% if page.get_child_tags %}
+  <ul class="blog-tags tags list-inline">
+    {% for tag in page.get_child_tags %}
+      <a href="{{ tag.url }}"><li class="tag">{{ tag }}</li></a>
+    {% endfor %}
+  </ul>
+{% elif page.get_tags %}
+<ul class="blog-tags tags list-inline">
+    {% for tag in page.get_tags %}
+      <a href="{{ tag.url }}"><li class="tag">{{ tag }}</li></a>
+    {% endfor %}
+  </ul>
+{% endif %}

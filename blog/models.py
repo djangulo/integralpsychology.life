@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db import models
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, get_language
 from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
@@ -11,7 +12,6 @@ from wagtail.admin.edit_handlers import (
     MultiFieldPanel,
     StreamFieldPanel,
 )
-
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import RichTextField, StreamField
@@ -21,6 +21,9 @@ from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from base.blocks import BaseStreamBlock
+
+from base.forms import get_suffixed_string
+
 
 class BlogPeopleRelationship(Orderable, models.Model):
     """
@@ -69,7 +72,7 @@ class BlogPage(Page):
     body = StreamField(
         BaseStreamBlock(), verbose_name="Page body", blank=True
     )
-    tags_en = ClusterTaggableManager(
+    tags = ClusterTaggableManager(
         verbose_name='Tags',
         through=BlogPageTag,
         blank=True,
@@ -94,6 +97,8 @@ class BlogPage(Page):
             return None
 
     search_fields = Page.search_fields + [
+        index.SearchField('title'),
+        index.SearchField('subtitle'),
         index.SearchField('introduction'),
         index.SearchField('body'),
     ]
@@ -104,9 +109,12 @@ class BlogPage(Page):
         StreamFieldPanel('body'),
         MultiFieldPanel([
             FieldPanel('date_published'),
-            FieldPanel('tags_en'),
+            FieldPanel('tags'),
             FieldPanel('tags_es'),
         ], heading='Blog information'),
+        InlinePanel(
+            'blog_person_relationship', label=_("Author(s)"),
+            panels=None, min_num=1),
         InlinePanel('gallery_images', label='Gallery images'),
     ]
 
@@ -130,10 +138,7 @@ class BlogPage(Page):
         are related to the blog post into a list we can access on the template.
         We're additionally adding a URL to access BlogPage objects with that tag
         """
-        if get_language() == 'en':
-            tags = self.tags_en.all()
-        else:
-            tags = self.tags_es.all()
+        tags = getattr(self, get_suffixed_string('tags')).all()
         for tag in tags:
             tag.url = '/'+'/'.join(s.strip('/') for s in [
                 self.get_parent().url,
@@ -149,6 +154,27 @@ class BlogPage(Page):
     # Empty list means that no child content types are allowed.
     subpage_types = []
 
+    def get_year_month_hierarchy(self):
+        qset = BlogPage.objects.descendant_of(
+            self.get_parent()).live().order_by('-date_published'
+                ).values_list('date_published', flat=True)
+        pairs = list(set(map(lambda x: (x.year, x.month), qset)))
+        result = []
+        for pair in pairs:
+            if not result:
+                result.append({'year': pair[0], 'months': []})
+            if not [x for x in result if x['year'] == pair[0]]:
+                result.append({'year': pair[0], 'months': []})
+            idx = [result.index(x) for x in result if x['year'] == pair[0]][0]
+            result[idx]['months'].append(pair[1])
+            result[idx]['months'] = list(set(result[idx]['months']))
+        return result
+
+
+    def get_context(self, request):
+        context = super(BlogPage, self).get_context(request)
+        context['dates'] = self.get_year_month_hierarchy()
+        return context
 
 
 class BlogIndexPage(RoutablePageMixin, Page):
@@ -170,17 +196,35 @@ class BlogIndexPage(RoutablePageMixin, Page):
         help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
     )
     content_panels = Page.content_panels + [
-        FieldPanel('introduction', classname="full"),
         ImageChooserPanel('image'),
+        FieldPanel('introduction', classname="full"),
     ]
 
     def children(self):
         return self.get_children().specific().live()
+    
+    def get_year_month_hierarchy(self):
+        qset = BlogPage.objects.descendant_of(
+            self).live().order_by('-date_published'
+                ).values_list('date_published', flat=True)
+        pairs = list(set(map(lambda x: (x.year, x.month), qset)))
+        result = []
+        for pair in pairs:
+            if not result:
+                result.append({'year': pair[0], 'months': []})
+            if not [x for x in result if x['year'] == pair[0]]:
+                result.append({'year': pair[0], 'months': []})
+            idx = [result.index(x) for x in result if x['year'] == pair[0]][0]
+            result[idx]['months'].append(pair[1])
+            result[idx]['months'] = list(set(result[idx]['months']))
+        return result
+
 
     def get_context(self, request):
         context = super(BlogIndexPage, self).get_context(request)
         context['posts'] = BlogPage.objects.descendant_of(
             self).live().order_by('-date_published')
+        context['dates'] = self.get_year_month_hierarchy()
         return context
 
     @route(r'^tags/$', name='tag_archive')
@@ -190,16 +234,69 @@ class BlogIndexPage(RoutablePageMixin, Page):
             tag = Tag.objects.get(slug=tag)
         except Tag.DoesNotExist:
             if tag:
-                msg = 'There are no blog posts tagged with "{}"'.format(tag)
-                messages.add_message(request, messages.INFO, msg)
+                msg = 'There are no blog posts tagged with "%s"' % tag
+                messages.add_message(request, messages.INFO, msg,
+                                 extra_tags='message--info')
             return redirect(self.url)
 
         posts = self.get_posts(tag=tag)
-        context = {
+        context = self.get_context(request)
+        context.update({
             'tag': tag,
-            'posts': posts
-        }
+            'posts': posts,
+            'dates': self.get_year_month_hierarchy(),
+        })
         return render(request, 'blog/blog_index_page.html', context)
+
+    @route(r'^date/$', name='date_archive')
+    @route(r'^date/(\d{4})/$', name='date_archive')
+    @route(r'^date/(\d{4})/(\d{1,2})/$', name='date_archive')
+    def date_archive(self, request, year=None, month=None):
+        if year is not None and month is None:
+            queryset =  BlogPage.objects.descendant_of(self
+                ).live().filter(date_published__year=int(year))
+        elif year is not None and month is not None:
+            queryset = BlogPage.objects.descendant_of(
+            self).live().filter(
+                models.Q(date_published__year=int(year)) &
+                models.Q(date_published__month=int(month))
+            )
+        if not queryset:
+            if year is not None and month is not None:
+                msg = _('There are no blog posts for %(year)s-%(month)s') % {
+                    'year': year,
+                    'month': month
+                }
+            elif year is not None and month is None:
+                msg = _('There are no blog posts for %(year)s') % {
+                    'year': year,
+                }
+            messages.add_message(request, messages.INFO, msg,
+                                 extra_tags='message--info')
+            return redirect(self.url)
+        context = self.get_context(request)
+        context.update({
+            'year': year,
+            'month': month,
+            'posts': queryset.order_by('-date_published'),
+            'dates': self.get_year_month_hierarchy(),
+        })
+        return render(request, 'blog/blog_index_page.html', context)
+
+    def get_posts_by_dates(self, year=None, month=None):
+        posts = BlogPage.objects.live().descendant_of(self)
+        if year and month:
+            posts = posts.filter(
+                models.Q(last_published_at__year=year) |
+                models.Q(last_published_at__year=month)
+            ).distinct()
+            return posts
+        if year and not month:
+            posts = posts.filter(
+                models.Q(last_published_at__year=year)
+            ).distinct()
+            return posts
+
 
     # Returns the child BlogPage objects for this BlogPageIndex.
     # If a tag is used then it will filter the posts by tag.
@@ -207,7 +304,7 @@ class BlogIndexPage(RoutablePageMixin, Page):
         posts = BlogPage.objects.live().descendant_of(self)
         if tag:
             posts = posts.filter(
-                models.Q(tags_en=tag) | models.Q(tags_es=tag)
+                models.Q(tags=tag) | models.Q(tags_es=tag)
             ).distinct()
         return posts
 

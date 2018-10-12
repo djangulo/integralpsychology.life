@@ -16,6 +16,9 @@ $colors-text-s: #000000;
 $colors-text-acc: #000000;
 $colors-text-gray: #444444;
 
+
+
+
 @mixin disabledElement() {
     pointer-events: none;
     cursor: default;

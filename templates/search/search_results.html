@@ -3,9 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {% blocktrans %}
-        Search{% if search_results %} results{% endif %}{% endblock %}
-    {% endblocktrans %}
+    {% if search_results %}
+        {% trans "Search results" %}
+    {% else %}
+        {% trans "Search" %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <h1>

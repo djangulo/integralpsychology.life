@@ -6,11 +6,13 @@
 {% load base_extras %}
 
 {% addtoblock "css" %}
-  <link type="text/css" rel="stylesheet" href="{% sass_src 'css/form.scss' %}">
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/form.scss' %}">
 {% endaddtoblock %}
 
 {% addtoblock "js" %}
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js"></script>
+  <script type="text/javascript" src="{% static 'vendor/es6-shim/es6-shim.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/email-mask.js' %}"></script>
+  {% comment %} <script type="text/javascript" src="{% static 'js/phone-mask.js' %}"></script> {% endcomment %}
   <script type="text/javascript" src="{% static 'js/form.js' %}"></script>
 {% endaddtoblock %}
 
@@ -30,7 +32,7 @@
   class="field-wrapper" 
   aria-required="{% if field.field.required %}true{% else %}false{% endif %}" 
   for="{{ field.label|lower }}"
-  data-descr="{{ field.field.widget.attrs|get_item:'data-charset' }}">
+  data-placeholder="{{ field.field.widget.attrs|get_item:'data-placeholder' }}">
     {% comment %} {{ field.field.widget.attrs|get_item:'title' }} {% endcomment %}
     <label class="label sr-only" for="{{ field.html_name }}">
       {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}

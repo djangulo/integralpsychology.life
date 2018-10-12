@@ -1,0 +1,89 @@
+//Message colors:
+$msg-alert-primary-bg: #cce5ff;
+$msg-alert-primary-fg: #b8daff;
+$msg-alert-primary-font: #004085;
+$msg-alert-secondary-bg: #e2e3e5;
+$msg-alert-secondary-fg: #d6d8db;
+$msg-alert-secondary-font: #383d41;
+$msg-alert-success-bg: #d4edda;
+$msg-alert-success-fg: #c3e6cb;
+$msg-alert-success-font: #155724;
+$msg-alert-danger-bg: #f8d7da;
+$msg-alert-danger-fg: #f5c6cb;
+$msg-alert-danger-font: #721c24;
+$msg-alert-warning-bg: #fff3cd;
+$msg-alert-warning-fg: #ffeeba;
+$msg-alert-warning-font: #856404;
+$msg-alert-info-bg: #d1ecf1;
+$msg-alert-info-fg: #bee5eb;
+$msg-alert-info-font: #0c5460;
+$msg-alert-light-bg: #fefefe;
+$msg-alert-light-fg: #fdfdfe;
+$msg-alert-light-font: #818182;
+$msg-alert-dark-bg: #d6d8d9;
+$msg-alert-dark-fg: #c6c8ca;
+$msg-alert-dark-font: #1b1e21;
+
+.messages__ul {
+    margin: 0;
+    padding:0;
+}
+
+.message {
+    display: block;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin-bottom: 0;
+    padding: 0.75rem 1.25rem;
+    position: relative;
+    color: $msg-alert-primary-font;
+    background-color: $msg-alert-primary-bg;
+    border-color: $msg-alert-primary-fg;
+
+}
+
+.message--primary {
+    color: $msg-alert-primary-font;
+    background-color: $msg-alert-primary-bg;
+    border-color: $msg-alert-primary-fg;
+}
+.message--secondary {
+    color: $msg-alert-secondary-font;
+    background-color: $msg-alert-secondary-bg;
+    border-color: $msg-alert-secondary-fg;
+}
+.message--success {
+    color: $msg-alert-success-font;
+    background-color: $msg-alert-success-bg;
+    border-color: $msg-alert-success-fg;
+}
+.message--danger {
+    color: $msg-alert-danger-font;
+    background-color: $msg-alert-danger-bg;
+    border-color: $msg-alert-danger-fg;
+}
+.message--warning {
+    color: $msg-alert-warning-font;
+    background-color: $msg-alert-warning-bg;
+    border-color: $msg-alert-warning-fg;
+}
+.message--secondary {
+    color: $msg-alert-secondary-font;
+    background-color: $msg-alert-secondary-bg;
+    border-color: $msg-alert-secondary-fg;
+}
+.message--info {
+    color: $msg-alert-info-font;
+    background-color: $msg-alert-info-bg;
+    border-color: $msg-alert-info-fg;
+}
+.message--light {
+    color: $msg-alert-light-font;
+    background-color: $msg-alert-light-bg;
+    border-color: $msg-alert-light-fg;
+}
+.message--dark {
+    color: $msg-alert-dark-font;
+    background-color: $msg-alert-dark-bg;
+    border-color: $msg-alert-dark-fg;
+}

@@ -1,0 +1,102 @@
+@import './variables';
+
+
+
+.dates {
+    display: block;
+}
+
+.year-group {
+    margin-bottom: 3em;
+    display: block;
+    display: grid;
+    grid-template-columns: 35px 1fr 1fr;
+    grid-template-rows: 2em 1fr;
+}
+
+button.chevron {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    display: inline-block;
+    width: 10%;
+    cursor: pointer;
+    @at-root #{&}:focus {
+        outline: none;
+    }
+    @at-root #{&}:hover {
+        button.chevron::before {
+            outline: $colors-s-light;
+        }
+    }
+    @at-root #{&}:active {
+        color: $colors-s-dark;
+    }
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    align-self: center;
+    justify-self: center;
+}
+
+.year-header,
+.month {
+    padding: 0.3em 0;
+    &:hover {
+        background-color: $colors-s-light;
+    }
+}
+
+.year-header {
+    // &:hover {
+    //     background-color: $colors-s-light;
+    // }
+    text-indent: 5px;
+    width: 85%;
+    display: inline-block;
+
+}
+.year-group__a {
+    grid-column: 2 / 4;
+    grid-row: 1 /2 ;
+}
+
+.month-group {
+    animation-name: slide-down;
+    animation-duration: 200ms;
+    grid-column: 2 / 4;
+    grid-row: 2 / 3;
+}
+
+.year-header:hover,
+.month:hover {
+    background-color: $colors-s-light;
+}
+
+.month {
+    text-indent: 2.5em;
+    width: 85%;
+    align-self: flex-end;
+}
+
+
+
+.visible--false {
+    display: none;
+}
+
+.visible--true {
+    display: block;
+}
+
+
+@keyframes slide-down {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

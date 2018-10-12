@@ -1,9 +1,17 @@
+{% load wagtailcore_tags navigation_tags wagtailimages_tags %}
+{% load sekizai_tags %}
+{% load sass_tags %}
+
+{% addtoblock "css" %}
+<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/message.scss' %}">
+{% endaddtoblock %}
+
 {% if messages %}
-<div role="alertdialog">
-    <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}"{% endif %} role="alert">{{ message }}</li>
-        {% endfor %}
+  <section class="messages" role="alertdialog">
+    <ul class="messages__ul">
+      {% for message in messages %}
+        <li class="message{% if message.tags %} {{ message.tags }}{% endif %}" role="alert">{{ message }}</li>
+      {% endfor %}
     </ul>
-</div>
+  </section>
 {% endif %}

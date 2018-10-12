@@ -10,6 +10,7 @@ from blog.models import BlogPage
 
 def search(request):
     # Search
+    # import pdb; pdb.set_trace()
     search_query = request.GET.get('q', None)
     if search_query:
         if 'elasticsearch' in settings.WAGTAILSEARCH_BACKENDS['default']['BACKEND']:

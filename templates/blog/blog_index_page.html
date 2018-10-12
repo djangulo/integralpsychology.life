@@ -1,58 +1,73 @@
 {% extends "base.html" %}
+{% load base_extras %}
 {% load wagtailcore_tags navigation_tags wagtailimages_tags %}
-{% load wagtail_modeltranslation %}
+{% load sekizai_tags %}
+{% load sass_tags %}
 {% load i18n %}
+
 {% block content %}
-    {% include "base/include/header-index.html" %}
-
-    <div class="container">
-        {% if tag %}
-            <div class="row">
-                <div class="col-md-12">
-                    {% blocktrans %}
-                        <p>Viewing all blog posts by <span class="outline">{{ tag }}</span></p>
-                    {% endblocktrans %}
-                </div>
-            </div>
-        {% endif %}
-
-        {% if page.get_child_tags %}
-            <ul class="blog-tags tags list-inline">
-                {% for tag in page.get_child_tags %}
-                    <li><a href="{{ tag.url }}">{{ tag }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <div class="row row-eq-height blog-list">
-            {% if posts %}
-                {% for blog in posts %}
-                    <li class="col-xs-12 col-sm-6 col-md-3 blog-list-item">
-                        <a href="{% pageurl blog %}">
-                            <div class="image">
-                                {% image blog.image fill-850x450-c50 as image %}
-                                <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}" alt="{{ image.alt }}" class="" />
-                            </div>
-                            <div class="text">
-                                <h2 class="blog-list-title">{{ blog.title }}</h2>
-                                <p>{{ blog.introduction|truncatewords:15 }}</p>
-                            </div>
-                            <div class="small footer">
-                                {% if blog.date_published %}
-                                    {{ blog.date_published }} by 
-                                {% endif %}
-                                {% for author in blog.authors %}
-                                    {{ author }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </div>
-                        </a>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <div class="col-md-12">
-                    <p>{% trans "We're sorry, but there seems to be nothing here." %}</p>
-                </div>
-            {% endif %}
-        </div>
+  {% addtoblock "css" %}
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/blog-index-page.scss' %}">
+  {% endaddtoblock %}
+  {% include "base/include/header-hero.html" %}
+  <div class="msg-container">
+    {% include "includes/messages.html" %}
+  </div>
+  {% if not tag %}
+    <div class="tags">
+      {% include 'blog/tags.html' %}
     </div>
+  {% endif %}
+  <aside class="aside">
+    {% include 'includes/aside.html' %}
+  </aside>
+  <section class="page-body">
+    {% if tag %}
+      {% addtoblock "css" %}
+        <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/icons/tag.scss' %}">
+      {% endaddtoblock %}
+      {% blocktrans %}
+        <h4>Viewing all blog posts by <span class="tag tag--inline">{{ tag }}</span></h4>
+      {% endblocktrans %}
+    {% endif %}
+    {% if year and month %}
+        {% blocktrans with mo=month|humanize_month %}
+          <h4>Viewing all blog posts for {{ mo }} {{ year }}.</h4>
+        {% endblocktrans %}
+      {% elif year and not month %}
+        {% blocktrans %}
+          <h4>Viewing all blog posts for {{ year }}.</h4>
+        {% endblocktrans %}
+    {% endif %}
+    <div class="row row-eq-height blog-list">
+      {% if posts %}
+        {% for blog in posts %}
+        <li class="col-xs-12 col-sm-6 col-md-3 blog-list-item">
+          <a href="{% pageurl blog %}">
+            <div class="image">
+              {% image blog.image fill-850x450-c50 as image %}
+              <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}" alt="{{ image.alt }}" class="" />
+            </div>
+            <div class="text">
+              <h2 class="blog-list-title">{{ blog.title }}</h2>
+              <p>{{ blog.introduction|truncatewords:15 }}</p>
+            </div>
+            <div class="small footer">
+              {% if blog.date_published %}
+                {{ blog.date_published }} by 
+              {% endif %}
+              {% for author in blog.authors %}
+                {{ author }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      {% else %}
+      <div class="col-md-12">
+        <p>{% trans "We're sorry, but there seems to be nothing here." %}</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
 {% endblock content %}

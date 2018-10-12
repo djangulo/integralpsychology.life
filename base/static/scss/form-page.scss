@@ -1,0 +1,21 @@
+.main {
+    grid-area: main;
+    align-self: flex-start;
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(50px, 6em) repeat(4, 1fr) minmax(50px, 6em);
+    grid-template-rows: min-content minmax(50px, max-content) max-content;
+    grid-template-areas:
+    "hero hero hero hero hero hero"
+    ". body body body body ."
+    ". form form form form .";
+}
+
+.page-body {
+    grid-area: body;
+}
+
+.form {
+    grid-area: form;
+    margin-top: 1em;
+}

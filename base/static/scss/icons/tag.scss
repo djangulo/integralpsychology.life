@@ -1,0 +1,47 @@
+@import './../variables';
+.tag {
+	float: left;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    font-size: 11px;
+    margin: 2px 5px 2px 12px;
+    padding: 0 10px 0 12px;
+    background: $colors-s-light;
+    color: $colors-text-s;
+    text-decoration: none;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    // border-right: 1px solid $colors-p-light;
+    // border-bottom: 1px solid $colors-p-light;
+    // border-top: 1px solid $colors-p-light;
+    &:before {
+        content: "";
+        float: left;
+        position: absolute;
+        top: 0;
+        left: -12px;
+        width: 0;
+        height: 0;
+        border-color: transparent $colors-s-light transparent transparent;
+        border-style: solid;
+        border-width: 12px 12px 12px 0;
+    }
+    &:after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: 0;
+        float: left;
+        width: 4px;
+        height: 4px;
+        border-radius: 2px;
+        background: #fff;
+        box-shadow: -1px -1px 2px #004977;
+    }
+}
+
+.tag--inline {
+    float: none;
+    display: inline-block;
+}
