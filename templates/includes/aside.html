@@ -26,7 +26,7 @@
     {% for dict in dates %}
       {% with year=dict|get_item:'year' months=dict|get_item:'months' %}
        <div id="group-{{ year }}"class="year-group">
-         <button role="collapse" class="chevron chevron--right" data-group="months-{{ year }}"></button>
+         <button role="button" class="chevron chevron--right" data-group="months-{{ year }}"></button>
          <a class="year-group__a" href="/{{ LANGUAGE_CODE }}/blog/date/{{ year }}/">
           <div class="year-header">
               {{ year }}

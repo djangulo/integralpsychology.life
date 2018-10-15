@@ -2,11 +2,10 @@
 {% load sass_tags %}
 {% load sekizai_tags %}
 
-{% addtoblock "css" %}
-<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/header-hero.scss' %}">
-{% endaddtoblock %}
-
 {% if page.image %}
+  {% addtoblock "css" %}
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/header-hero.scss' %}">
+  {% endaddtoblock %}
   {% image page.image fill-1920x1200 as image %}
   <div class="header-hero__gradient-mask"></div>
   <div class="header-hero" style="background-image:url('{{ image.url }}')">
@@ -18,6 +17,9 @@
     </div>
   </div>
 {% elif page.main_image %}
+  {% addtoblock "css" %}
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/header-hero.scss' %}">
+  {% endaddtoblock %}
   {% image page.main_image fill-1920x1200 as image %}
   <div class="header-hero__gradient-mask"></div>
   <div class="header-hero" style="background-image:url('{{ image.url }}')">
@@ -28,13 +30,23 @@
       {% endif %}
     </div>
   </div>
-{% else %}
-<div class="header-hero">
-  <div class="header-hero__text">
-    <h1>{{ page.title }}</h1>
-    {% if page.subtitle %}
-      <h4 class="stand-first">{{ page.subtitle }}</h4>
-    {% endif %}
+{% elif page.hero_image %}
+  {% addtoblock "css" %}
+    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/home-hero.scss' %}">
+  {% endaddtoblock %}
+    {% image page.hero_image fill-1920x600 as image %}
+  <div class="home-hero__gradient-mask"></div>
+  <div class="home-hero" style="background-image:url('{{ image.url }}')">
+      <div class="home-hero__text">
+          <h1 class="home-hero__h1">{{ page.title }}</h1>
+          <p class="home-hero__lead">{{ page.hero_text }}</p>
+          {% if page.hero_cta_link %}
+          <a href="{% pageurl page.hero_cta_link %}" class="hero-cta-link hvr-icon-forward">
+              {{ page.hero_cta }}
+          </a>
+          {% else %}
+          {{ page.hero_cta }}
+          {% endif %}
+      </div>
   </div>
-</div>
 {% endif %}

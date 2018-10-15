@@ -1,0 +1,88 @@
+@import './../variables.scss';
+
+@mixin setSize($w, $h, $offset) {
+    width: $w;
+    height: $h;
+    &:before {
+        width: $w;
+        height: $h;
+        top: -$offset;
+    }
+    &:after {
+        width: $w;
+        height: $h;
+        top: $offset;
+    }
+}
+
+
+%burger-icon {
+    margin-top: 10px;
+    width: 150px;
+    height: 40px;
+    background-color: gray;
+    border: none;
+    position: relative;
+    &:before {
+        content: "";
+        width: 30px;
+        height: 3px;
+        background-color: black;
+        border: none;
+        position: absolute;
+        top: -8px;
+    }
+    &:after {
+        content: "";
+        width: 30px;
+        height: 3px;
+        background-color: black;
+        border: none;
+        position: absolute;
+        top: 8px;
+    }
+}
+
+.burger-icon {
+    @extend %burger-icon;
+    // @include setSize(30px, 3px, 8px);
+}
+
+.burger-icon--tiny {
+    @include setSize(15px, 2px, 3px);
+}
+
+.burger-icon--small {
+    @include setSize(20px, 3px, 4px);
+}
+
+.burger-icon--large {
+    @include setSize(40px, 5px, 10px);
+}
+
+.burger-icon--huge {
+    @include setSize(50px, 6px, 12px);
+}
+
+.burger-icon:active {
+    background-color: $colors-s-dark;
+    &::before {
+        background-color: $colors-s-dark;
+    }
+    &::after {
+        background-color: $colors-s-dark;
+    }
+}
+.burger-icon:focus {
+    outline: none;
+}
+
+.burger-icon:hover {
+    background-color: $colors-s-normal;
+    &::before {
+        background-color: $colors-s-normal;
+    }
+    &::after {
+        background-color: $colors-s-normal;
+    }
+}

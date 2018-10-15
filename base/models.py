@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
@@ -18,10 +19,12 @@ from wagtail.contrib.forms.models import (
     AbstractFormField,
     FORM_FIELD_CHOICES,
 )
+from wagtail.documents.models import AbstractDocument, Document, get_document_model
+from wagtail.documents.edit_handlers import DocumentChooserPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
-
+from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from .blocks import BaseStreamBlock
 from .forms import CaptchaFormBuilder
@@ -176,6 +179,157 @@ class StandardPage(Page):
         StreamFieldPanel('body'),
     ]
 
+class StyleDocument(AbstractDocument):
+
+    source = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    admin_form_fields = Document.admin_form_fields + (
+        'source',
+    )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(StyleDocument, self).save(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        self.validate_file_extension()
+        super(StyleDocument, self).clean(*args, **kwargs)
+
+    def validate_file_extension(self):
+        if self.file_extension not in ('css', 'scss', 'sass'):
+            raise ValidationError(
+                _('Invalid file extension, must be .css|scss|sass'),
+                code='invalid_file',
+            )
+
+
+@register_snippet
+class StyleSnippet(index.Indexed, ClusterableModel):
+    identifier = models.CharField(
+        _('identifier'),
+        max_length=254,
+    )
+    class_name = models.SlugField(
+        _('class name'),
+        max_length=254,
+        help_text=_('Name of the CSS class name that the snippet will'\
+                    'be rendered with. Be careful not to choose a cla'\
+                    'ss name that will interfere with the rest of the'\
+                    ' styles. The same class name needs to match the '\
+                    'class defined in the style_file.')
+    )
+    style_file = models.ForeignKey(
+        get_document_model(),
+        verbose_name=_('style file'),
+        blank=False,
+        null=False,
+        related_name='+',
+        on_delete=models.CASCADE,
+        help_text=_('Only filenames ending in .css, .scss or .sass '\
+                    'will be processed.')
+    )
+
+    panels = [
+        FieldPanel('identifier'),
+        FieldPanel('class_name'),
+        DocumentChooserPanel('style_file'),
+    ]
+
+    search_fields = [
+        index.SearchField('identifier'),
+        index.SearchField('class_name'),
+    ]
+
+    def __str__(self):
+        return self.identifier
+
+    class Meta:
+        verbose_name = _('style snippet')
+        verbose_name_plural = _('style snippets')
+
+    def validate_file_extension(self):
+        # pylint: disable=E1101
+        if self.style_file.file_extension not in ('css', 'scss', 'sass'):
+            raise ValidationError(
+                _('Invalid file extension, must be .css|scss|sass'),
+                code='invalid_file',
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(StyleSnippet, self).save(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        self.validate_file_extension()
+        super(StyleSnippet, self).clean(*args, **kwargs)
+
+
+class FeaturedPage(models.Model):
+    title = models.CharField(
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text=_('Title to display on the Home Page, if left blank'\
+                    ', the featured page\'s title will be used')
+    )
+    slug = models.SlugField(
+        max_length=254,
+        blank=False,
+        null=False,
+        help_text=_('Slug to refer to the feature page when calling '\
+                    'it through the \'featured_page_single\' template'\
+                    ' tag. Required.')
+    )
+    message = models.CharField(
+        max_length=254,
+        blank=True,
+        null=True,
+        help_text=_('Message inviting users to go see this feature')
+    )
+    featured_page = models.ForeignKey(
+        'wagtailcore.Page',
+        related_name='feature_home_relationship',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    style = models.ForeignKey(
+        'StyleSnippet',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text=_('Style snippet to use, will use a default style '\
+                    'if left blank. Take a look at the default file '\
+                    'in \'base/static/scss/default-snippets/default.scss'\
+                    ' and other files there for some examples on how '\
+                    'to setup the [S]CSS classes.')
+    )
+
+    panels = [
+        FieldPanel('title'),
+        FieldPanel('message'),
+        PageChooserPanel('featured_page'),
+        SnippetChooserPanel('style'),
+    ]
+
+    class Meta:
+        abstract = True
+
+
+class HomePageFeatureRelationship(Orderable, FeaturedPage):
+    page = ParentalKey(
+        'HomePage',
+        related_name='home_feature_relationship',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
 
 class HomePage(Page):
     """
@@ -189,7 +343,7 @@ class HomePage(Page):
     """
     template = 'base/home_page.html'
     # Hero section of HomePage
-    image = models.ForeignKey(
+    hero_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -242,65 +396,13 @@ class HomePage(Page):
         help_text='Write some promotional copy'
     )
 
-    # Featured sections on the HomePage
-    # You will see on templates/base/home_page.html that these are treated
-    # in different ways, and displayed in different areas of the page.
-    # Each list their children items that we access via the children function
-    # that we define on the individual Page models e.g. BlogIndexPage
-    featured_section_1_title = models.CharField(
-        null=True,
-        blank=True,
-        max_length=255,
-        help_text='Title to display above the promo copy'
-    )
-    featured_section_1 = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='First featured section for the homepage. Will display up to '
-        'three child items.',
-        verbose_name='Featured section 1'
-    )
-
-    featured_section_2_title = models.CharField(
-        null=True,
-        blank=True,
-        max_length=255,
-        help_text='Title to display above the promo copy'
-    )
-    featured_section_2 = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='Second featured section for the homepage. Will display up to '
-        'three child items.',
-        verbose_name='Featured section 2'
-    )
-
-    featured_section_3_title = models.CharField(
-        null=True,
-        blank=True,
-        max_length=255,
-        help_text='Title to display above the promo copy'
-    )
-    featured_section_3 = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='Third featured section for the homepage. Will display up to '
-        'six child items.',
-        verbose_name='Featured section 3'
-    )
+    @property
+    def featured_pages(self):
+        return self.home_feature_relationship.all()
 
     content_panels = Page.content_panels + [
         MultiFieldPanel([
-            ImageChooserPanel('image'),
+            ImageChooserPanel('hero_image'),
             FieldPanel('hero_text', classname="full"),
             MultiFieldPanel([
                 FieldPanel('hero_cta'),
@@ -313,20 +415,15 @@ class HomePage(Page):
             FieldPanel('promo_text'),
         ], heading="Promo section"),
         StreamFieldPanel('body'),
-        MultiFieldPanel([
-            MultiFieldPanel([
-                FieldPanel('featured_section_1_title'),
-                PageChooserPanel('featured_section_1'),
-                ]),
-            MultiFieldPanel([
-                FieldPanel('featured_section_2_title'),
-                PageChooserPanel('featured_section_2'),
-                ]),
-            MultiFieldPanel([
-                FieldPanel('featured_section_3_title'),
-                PageChooserPanel('featured_section_3'),
-                ])
-        ], heading="Featured homepage sections", classname="collapsible")
+        InlinePanel(
+            relation_name='home_feature_relationship',
+            heading=_('Featured homepage sections'),
+            label=_("Featured_pages"),
+            help_text=_('Each of the links selected will have a small'\
+                        ' section on the Home Page.'),
+            min_num=0,
+            max_num=5,
+            classname="collapsible"),
     ]
 
     def __str__(self):

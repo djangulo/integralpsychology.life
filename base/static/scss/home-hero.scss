@@ -1,9 +1,11 @@
 @import './variables';
+
 $hero-min-height: 60vh;
 $hero-height: 60vh;
-.hero {
+.home-hero {
     box-sizing: border-box;
-    grid-area: hero;
+    @include grid-row(2, 3);
+    @include grid-column(1, -1);
     width: 100%;
     min-height: $hero-height;
     padding: 0;
@@ -16,7 +18,7 @@ $hero-height: 60vh;
     flex-direction: column-reverse;
 }
 
-.hero__text {
+.home-hero__text {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,27 +33,28 @@ $hero-height: 60vh;
     }
 }
 
-.hero__gradient-mask {
+.home-hero__gradient-mask {
     // position: absolute;
     // width: 100%;
     // height: $hero-height;
     // top: $header-height;
-    grid-area: hero;
+    @include grid-row(2, 3);
+    @include grid-column(1, -1);
     background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,1) 100%);
     z-index: 0;
 }
 
-// .hero__h1 {
+// .home-hero__h1 {
     //     color: #dddddd;
     // }
     
-    // .hero__lead {
+    // .home-hero__lead {
         //     color: #dddddd;
         //     font-size: 1.6em;
         //     margin: 40px;
         // }
         
-        // .hero h1:after {
+        // .home-hero h1:after {
             //     background-color: rgba(255,255,255, 0.7);
             //     content: "";
             //     display: block;

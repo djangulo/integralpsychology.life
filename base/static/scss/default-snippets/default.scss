@@ -1,0 +1,257 @@
+/**
+    Default scss file
+    Follow this pattern when creating your own scss/sass/css files
+    for the Home Page featured pages.
+
+    Note that if using a plain scss file, media query sizes need to be
+    specified as the @import '../variables' will not be available.
+
+    Note that scss/sass files allow for a nested structure with @at-root.
+    To translate this to a plain css file, make classes for each element
+    following the BEM structure below:
+    - class name :: as specified in the style snippet. We'll use my-class 
+       for the rest of the examples
+    - my-class__single :: div containing the page with no children (About, contact)
+    - my-class__single__mask :: empty utility div to mask, fill, etc
+    - my-class__single__heading :: h3 heading for the page
+    - my-class__single__message :: p element for the message
+    - my-class__single__figure :: figure element that holds the single page image
+    - my-class__children__heading :: h3 heading for a page with children (i.e. Blog, Gallery)
+    - my-class__children__message :: p element the message of a page with children
+    - my-class__child :: div containing one of the children (a single blog entry)
+    - my-class__child__mask :: empty utility div to mask, fill, etc
+    - my-class__child__heading :: h4 heading for each of the children
+    - my-class__child__figure :: figure element that holds the child image
+
+*/
+@import '../variables';
+
+.featured-page {
+    display: block;
+    width: 100%;
+    margin: 1rem auto 0.7rem;
+    @include border-radius(2%);
+    @at-root #{&}--single {
+        display: grid;
+        @include grid-template-columns(1fr 1fr 1fr);
+        @include grid-template-rows(1fr);
+    }
+    grid-auto-flow: row dense;
+    @at-root #{&}__single {
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block;
+        min-height: 40vmin;
+        position: relative;
+        z-index: -2;
+        @include grid-row(1, -1);
+        @include grid-column(1, -1);
+        display: grid;
+        @include grid-template-columns(1fr);
+        @include grid-template-rows(minmax(2em, min-content) 1fr);
+    }
+    @at-root #{&}__single__mask {
+        background: linear-gradient(120deg, hsla(0, 0%, 0%, .9) 0, hsla(0, 0%, 0%, .7) 70%, hsla(0, 0%, 0%, .5) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        z-index: -1;
+        @include grid-row(1, -1);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__single__image {
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        z-index: -2;
+        @include grid-row(1, -1);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__single__heading {
+        color: $colors-s-dark;
+        padding: 0 2em;
+        z-index: 0;
+        padding-top: 0.8rem;
+        @include grid-row(1, 2);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__single__message {
+        color: $colors-s-dark;
+        padding: 0 2em;
+        z-index: 0;
+        font-size: 0.9em;
+        @include grid-row(2, 3);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}--child {
+        display: grid;
+        @include grid-template-columns(1fr 1fr);
+        @include grid-template-rows(minmax(1em, min-content) repeat(auto-fill, 40vmin));
+    }
+    @at-root #{&}__children__header {
+        display: block;
+        @include grid-row(1, 2);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__children__heading {
+        color: $colors-s-dark;
+        z-index: 10;
+        display: inline;
+    }
+    @at-root #{&}__children__message {
+        color: $colors-s-dark;
+        z-index: 10;
+        display: inline;
+    }
+    @at-root #{&}__child {
+        box-sizing: border-box;
+        min-width: 240px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        min-height: 40vmin;
+        position: relative;
+        z-index: -2;
+        // @include grid-row(1, -1);
+        @include grid-column(1, -1);
+        display: grid;
+        @include grid-template-columns(1fr);
+        @include grid-template-rows(minmax(2em, min-content) 1fr);
+    }
+    @at-root #{&}__child__mask {
+        background: linear-gradient(120deg, hsla(0, 0%, 0%, .9) 0, hsla(0, 0%, 0%, .7) 70%, hsla(0, 0%, 0%, .5) 100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        z-index: -1;
+        @include grid-row(1, -1);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__child__image {
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        z-index: -2;
+        @include grid-row(1, -1);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__child__heading {
+        color: $colors-s-dark;
+        padding: 0 2em;
+        z-index: 0;
+        @include grid-row(1, 2);
+        @include grid-column(1, -1);
+    }
+    @at-root #{&}__child__intro {
+        color: $colors-s-dark;
+        padding: 0 2em;
+        z-index: 0;
+        font-size: 0.9em;
+        @include grid-row(2, 3);
+        @include grid-column(1, -1);
+    }
+}
+
+@media screen and (min-width: $tablet-portrait) {
+    .featured-page {
+        @at-root #{&}__single {
+            @include grid-template-columns(1fr 1fr 1fr);
+            @include grid-column(1, -1);
+            @include grid-row(1, -1);
+        }
+        @at-root #{&}__single__mask {
+            background: none;
+        }
+        @at-root #{&}__single__image {
+            width: 60%;
+            left: 40%;
+            background-size: cover;
+            // background-position: 100% 50%;
+            @include grid-column(1, -1);
+        }
+        @at-root #{&}__single__heading {
+            padding-top: 2rem;
+            font-size: 1.5em;
+            @include grid-column(1, 2);
+        }
+        @at-root #{&}__single__message {
+            padding: 0 3em;
+            font-size: 1em;
+            @include grid-column(1, 2);
+        }
+        @at-root #{&}__children__heading {
+            color: $colors-s-dark;
+            z-index: 10;
+            display: inline;
+        }
+        @at-root #{&}__children__message {
+            color: $colors-s-dark;
+            z-index: 10;
+            display: inline;
+        }
+        @at-root #{&}__child {
+            display: inline-block;
+            grid-column: auto;
+            -ms-grid-column: auto;
+        }
+        @at-root #{&}__child__mask {
+        }
+        @at-root #{&}__child__heading {
+            padding-top: 2rem;
+            font-size: 1.5em;
+        }
+        @at-root #{&}__child__intro {
+            padding: 0 3em;
+            font-size: 1em;
+        }
+    }
+}
+
+@media screen and (min-width: $tablet-landscape) {
+    .featured-page {
+        @at-root #{&}__single {
+        }
+        @at-root #{&}__single__mask {
+        }
+        @at-root #{&}__single__heading {
+        }
+        @at-root #{&}__single__message {
+        }
+        @at-root #{&}__children__heading {
+        }
+        @at-root #{&}__children__message {
+        }
+        @at-root #{&}__child {
+        }
+        @at-root #{&}__child__mask {
+        }
+        @at-root #{&}__child__heading {
+        }
+        @at-root #{&}__child__intro {
+        }
+    }
+}

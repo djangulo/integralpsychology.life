@@ -3,11 +3,11 @@
 {% load sass_tags %}
 
 {% addtoblock "css" %}
-<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/message.scss' %}">
+<link type="text/css" rel="stylesheet" href="{% sass_src 'scss/alerts.scss' %}">
 {% endaddtoblock %}
 
 {% if messages %}
-  <section class="messages" role="alertdialog">
+  <section class="alerts" role="alertdialog">
     <ul class="messages__ul">
       {% for message in messages %}
         <li class="message{% if message.tags %} {{ message.tags }}{% endif %}" role="alert">{{ message }}</li>

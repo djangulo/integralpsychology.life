@@ -27,32 +27,53 @@ a:hover {
     min-height: 100vh;
     background: $body-background;
     display: grid;
-    grid-template-rows: $header-height 1fr minmax(200px, max-content);
+    @include grid-template-rows(minmax($header-min-height, min-content) 1fr minmax(200px, max-content));
+    @include grid-template-columns(25px repeat(3, 1fr) 25px);
     grid-template-areas:
     "header header header header header"
     "main main main main main"
     "footer footer footer footer footer";
 }
 
-@media (min-width: 768px) {
-    body {
-        font-size: 22px;
-        //   line-height: 1;
-    }
-}
+
+
+
 
 .main {
-    grid-area: main;
+    grid-area: main !important;
+    max-width: 960px;
+    margin: 0 auto;
     // display: grid;
     // grid-template-areas:
     //   ""
 }
 
-.messages {
-    grid-area: msg;
-}
-
 .footer {
     grid-area: footer;
     background-color: #fdfdfe;
+}
+
+.full-width,
+.left,
+.right {
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+    display: block;
+}
+
+@media (min-width: $tablet-portrait) {
+    body {
+        font-size: 22px;
+    }
+    .left {
+        float: left;
+        margin-right: 1rem;
+        max-width: 60%;
+    }
+    .right {
+        float: right;
+        margin-left: 1rem;
+        max-width: 60%;
+    }
 }

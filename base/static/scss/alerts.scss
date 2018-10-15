@@ -1,4 +1,6 @@
 //Message colors:
+@import './variables';
+
 $msg-alert-primary-bg: #cce5ff;
 $msg-alert-primary-fg: #b8daff;
 $msg-alert-primary-font: #004085;
@@ -24,11 +26,15 @@ $msg-alert-dark-bg: #d6d8d9;
 $msg-alert-dark-fg: #c6c8ca;
 $msg-alert-dark-font: #1b1e21;
 
+.alerts {
+    @include grid-row(3, 4);
+    @include grid-column(1, -1)
+}
+
 .messages__ul {
     margin: 0;
     padding:0;
 }
-
 .message {
     display: block;
     box-sizing: border-box;

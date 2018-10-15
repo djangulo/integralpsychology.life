@@ -1,108 +1,48 @@
 {% extends "base.html" %}
 {% load static %}
-{% load wagtailimages_tags wagtailcore_tags navigation_tags %}
+{% load wagtailimages_tags wagtailcore_tags navigation_tags base_extras %}
 {% load sass_tags %}
 {% load sekizai_tags %}
 
 
 {% block content %}
-{% addtoblock "css" %}
-    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/home-page.scss' %}">
-    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/hero.scss' %}">
-    <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/message-divider.scss' %}">
-{% endaddtoblock %}
-
-{% if page.image != None %}
-    {% image page.image fill-1920x600 as image %}
-{% endif %}
-<div class="hero__gradient-mask"></div>
-<div class="hero" style="background-image:url('{{ image.url }}')">
-    <div class="hero__text">
-        <h1 class="hero__h1">{{ page.title }}</h1>
-        <p class="hero__lead">{{ page.hero_text }}</p>
-        {% if page.hero_cta_link %}
-        <a href="{% pageurl page.hero_cta_link %}" class="hero-cta-link hvr-icon-forward">
-            {{ page.hero_cta }}
-        </a>
-        {% else %}
-        {{ page.hero_cta }}
-        {% endif %}
-    </div>
-</div>
-
-{% if page.promo_title != None %}
-<section class="promo">
+<div class="main-content">
+  {% addtoblock "css" %}
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/home-page.scss' %}">
+  <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/message-divider.scss' %}">
+  {% endaddtoblock %}
+  
+  
+  {% if page.promo_title %}
+  <section class="promo">
     <figure>{% image page.promo_image fill-200x200-c100 %}</figure>
     <div class="promo-text">
-        <h3>{{ page.promo_title }}</h3>
-        {{ page.promo_text|safe }}
+      <h3>{{ page.promo_title }}</h3>
+      {{ page.promo_text|safe }}
     </div>
-</section>
-{% endif %}
+  </section>
+  {% endif %}
+  
+  {% if page.body %}
+  <section class="page-body">
+    {{ page.body }}
+  </section>
+  {% endif %}
 
-{% if page.featured_section_1 != None %}
-<section class="featured">
-    <h2>{{ page.featured_section_1_title }}</h2>
-    {% for childpage in page.featured_section_1.specific.children|slice:"4" %}
-    <li>
-        <div class="row">
-            <a href="{{childpage.url}}">
-                <figure>
-                    {% image childpage.image fill-180x140-c100 %}
-                </figure>
-            </a>
-            <div class="col-xs-8">
-                <h3><a href="{{childpage.url}}">{{childpage.title}}</a></h3>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-</section>
-{% endif %}
 
-{% if page.body %}
-    <section class="page-body">
-        {{ page.body }}
-    </section>
-{% endif %}
+  {% for featured_page in page.featured_pages %}
+    {% addtoblock 'css' %}
+      {% if featured_page.style %}
+        <link type="text/css" rel="stylesheet" href="{{ featured_page.style.style_file.url }}">
+      {% else %}
+        <link type="text/css" rel="stylesheet" href="{% sass_src 'scss/default-snippets/default.scss' %}">
+      {% endif %}
+    {% endaddtoblock %}
+  {% endfor %}
 
-{% if page.featured_section_3 != None %}
-<section class="featured">
-    <h2>{{ page.featured_section_3_title }}</h2>
-    {% for childpage in page.featured_section_3.specific.children|slice:"4" %}
-    <li>
-        <div class="row">
-            <a href="{{childpage.url}}">
-                <figure>
-                    {% image childpage.image fill-180x140-c100 %}
-                </figure>
-            </a>
-            <div class="col-xs-8">
-                <h3><a href="{{childpage.url}}">{{childpage.title}}</a></h3>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-</section>
-{% endif %}
-
-{% if page.featured_section_2 != None %}
-<section class="featured">
-    <h2>{{ page.featured_section_2_title }}</h2>
-    {% for childpage in page.featured_section_2.specific.children|slice:"4" %}
-    <li>
-        <div class="row">
-            <a href="{{childpage.url}}">
-                <figure>
-                    {% image childpage.image fill-180x140-c100 %}
-                </figure>
-            </a>
-            <div class="col-xs-8">
-                <h3><a href="{{childpage.url}}">{{childpage.title}}</a></h3>
-            </div>
-        </div>
-    </li>
-    {% endfor %}
-</section>
-{% endif %}
+  <div class="featured">
+    {% get_featured_pages calling_page=page num_children=4 %}
+  </div>
+  
+</div>
 {% endblock content %}

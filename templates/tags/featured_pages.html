@@ -1,0 +1,80 @@
+{% load base_extras wagtailimages_tags wagtailcore_tags %}
+{% load sekizai_tags %}
+{% load sass_tags %}
+
+{% for featured_page in featured_pages %}
+  {% with children=featured_page|get_item:'children' style=featured_page|get_item:'style' obj=featured_page|get_item:'obj' feature=featured_page|get_item:'page' %}
+    {% if children %}
+    {% if feature.specific.image %}
+      {% image feature.specific.image fill-960x640-c100 as single_image %}
+    {% elif feature.specific.main_image %}
+      {% image feature.specific.main_image fill-960x640-c100 as single_image %}
+    {% endif %}
+      <section class="featured-page featured-page--child{% if style %} {{ style.class_name }}{% endif %}">
+        <a class="featured-page__children__header{% if style %} {{ style.class_name }}__children__header{% endif %}" href="{{ feature.url }}">
+            <h3 class="featured-page__children__heading{% if style %} {{ style.class_name }}__children__heading{% endif %}">
+              {% if obj.title %}
+                {{ obj.title }}
+              {% else %}
+                {{ feature.title }}
+              {% endif %}:
+            </h3>
+            <p class="featured-page__children__message{% if style %} {{ style.class_name }}__children__message{% endif %}">
+              {% if obj.message %}
+                {{ obj.message }}
+              {% endif %}
+            </p>
+        </a>
+        {% for childpage in children %}
+          {% if childpage.specific.image %}
+            {% image childpage.specific.image fill-960x640-c100 as child_image %}
+          {% elif childpage.specific.main_image %}
+            {% image childpage.specific.main_image fill-960x640-c100 as child_image %}
+          {% endif %}
+          <a class="featured-page__child{% if style %} {{ style.class_name }}__child{% endif %}" href="{{ childpage.url }}">
+            {% comment %}<div class="featured-page__child{% if style %} {{ style.class_name }}__child{% endif %}">{% endcomment %}
+                <div class="featured-page__child__mask{% if style %} {{ style.class_name }}__child__mask{% endif %}"></div>
+                <div class="featured-page__child__image{% if style %} {{ style.class_name }}__child__image{% endif %}"
+                style="background-image: url('{{ child_image.url }}');"></div>
+              <h4 class="featured-page__child__heading{% if style %} {{ style.class_name }}__child__heading{% endif %}">
+                {{ childpage.title }}
+              </h4>
+              <p class="featured-page__child__intro{% if style %} {{ style.class_name }}__child__intro{% endif %}">
+                {% if childpage.specific.introduction %}
+                  {{ childpage.specific.introduction|truncatechars:"100" }}
+                {% elif childpage.specific.subtitle %}
+                  {{ childpage.specific.subtitle|truncatechars:"100" }}
+                {% endif %}
+              </p>
+            {% comment %}</div>{% endcomment %}
+          </a>
+          {% endfor %}
+          </section>
+    {% else %}
+      {% if feature.specific.image %}
+        {% image feature.specific.image fill-960x640-c100 as single_image %}
+      {% elif feature.specific.main_image %}
+        {% image feature.specific.main_image fill-960x640-c100 as single_image %}
+      {% endif %}
+        <section class="featured-page featured-page--single{% if style %} {{ style.class_name }}{% endif %}">
+          <a class="featured-page__single{% if style %} {{ style.class_name }}__single{% endif %}" href="{{ feature.specific.url }}">
+            <div class="featured-page__single__mask{% if style %} {{ style.class_name }}__single__mask{% endif %}"></div>
+            <div class="featured-page__single__image{% if style %} {{ style.class_name }}__single__image{% endif %}"
+            style="background-image: url('{{ single_image.url }}');"></div>
+            <h3 class="featured-page__single__heading{% if style %} {{ style.class_name }}__single__heading{% endif %}">
+                {% if obj.title %}
+                  {{ obj.title }}
+                {% else %}
+                  {{ feature.title }}
+                {% endif %}
+            </h3>
+            <p class="featured-page__single__message{% if style %} {{ style.class_name }}__single__message{% endif %}">
+              {% if obj.message %}
+                {{ obj.message }}
+              {% endif %}
+            </p>
+          </a>
+        </section>
+        {% endif %}
+  {% endwith %}
+{% endfor %}

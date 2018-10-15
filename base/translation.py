@@ -4,10 +4,12 @@ from .models import (
     CaptchaFormField,
     FormPage,
     FooterText,
+    HomePage,
+    HomePageFeatureRelationship,
+    StyleSnippet,
     StandardPage,
     People,
     PeopleIndexPage,
-    HomePage,
 )
 
 
@@ -15,6 +17,9 @@ from .models import (
 class PeopleTR(TranslationOptions):
     fields = ('job_title', 'bio')
 
+@register(StyleSnippet)
+class PeopleTR(TranslationOptions):
+    pass
 
 @register(StandardPage)
 class StandardPageTR(TranslationOptions):
@@ -40,6 +45,7 @@ class FormPageTR(TranslationOptions):
 class CaptchaFormFieldTR(TranslationOptions):
     fields = ('label', 'placeholder',)
 
+
 @register(HomePage)
 class HomePageTR(TranslationOptions):
     fields = (
@@ -47,7 +53,12 @@ class HomePageTR(TranslationOptions):
         'hero_cta',
         'promo_title',
         'promo_text',
-        'featured_section_1_title',
-        'featured_section_2_title',
-        'featured_section_3_title',
+    )
+
+
+@register(HomePageFeatureRelationship)
+class HomePageFeatureRelationshipTR(TranslationOptions):
+    fields = (
+        'title',
+        'message',
     )

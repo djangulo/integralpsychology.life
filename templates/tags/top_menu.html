@@ -9,7 +9,7 @@
         </a>
     </div>
     {% else %}
-        <a class="nav__link {{ menuitem.title|lower|cut:' ' }}{% if menuitem.active %} nav__link--active{% endif %}" role="menuitem" href="{% pageurl menuitem %}">
+        <a class="nav__link {{ menuitem.title|lower|cut:' ' }}{% if menuitem.active %} nav__link--active{% endif %}" href="{% pageurl menuitem %}">
             {% comment %} <div class="nav__div"> {% endcomment %}
                {{ menuitem.title }}
             {% comment %} </div>     {% endcomment %}

@@ -3,13 +3,11 @@
     align-self: flex-start;
     display: grid;
     width: 100%;
-    grid-template-columns: minmax(50px, 6em) repeat(4, 1fr) minmax(50px, 6em);
-    grid-template-rows: min-content minmax(0, min-content) minmax(60px, max-content) max-content;
+    grid-template-columns: minmax(50px, 6em) repeat(2, 1fr) minmax(50px, 6em);
+    grid-template-rows: min-content minmax(60px, max-content);
     grid-template-areas:
-    "hero hero hero hero hero hero"
-    "msg msg msg msg msg msg"
-    ". tags tags tags aside ."
-    ". body body body aside .";
+    "tags tags tags aside"
+    "pbody pbody pbody aside";
 }
 
 .page-body {
@@ -18,8 +16,4 @@
 
 .aside {
     grid-area: aside;
-}
-
-.msg-container {
-    grid-area: msg;
 }

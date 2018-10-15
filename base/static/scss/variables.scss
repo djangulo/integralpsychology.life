@@ -16,7 +16,12 @@ $colors-text-s: #000000;
 $colors-text-acc: #000000;
 $colors-text-gray: #444444;
 
-
+$phone-portrait: 359px;
+$phone-landcape: 567px;
+$tablet-portrait: 767px;
+$tablet-landscape: 1024px;
+$desktop-mid: 1200px;
+$desktop-large: 1400px;
 
 
 @mixin disabledElement() {
@@ -26,5 +31,108 @@ $colors-text-gray: #444444;
     color: #777777;
 }
 
+@mixin border-radius($value) {
+    -khtml-border-radius: $value;
+    -o-border-radius: $value;
+    -ms-border-radius: $value;
+    -moz-border-radius: $value;
+    -webkit-border-radius: $value;
+    border-radius: $value;
+}
+
+@mixin border-top-left-radius($value) {
+    -khtml-border-top-left-radius: $value;
+    -o-border-top-left-radius: $value;
+    -ms-border-top-left-radius: $value;
+    -moz-border-top-left-radius: $value;
+    -webkit-border-top-left-radius: $value;
+    border-top-left-radius: $value;
+}
+
+@mixin border-top-right-radius($value) {
+    -khtml-border-top-right-radius: $value;
+    -o-border-top-right-radius: $value;
+    -ms-border-top-right-radius: $value;
+    -moz-border-top-right-radius: $value;
+    -webkit-border-top-right-radius: $value;
+    border-top-right-radius: $value;
+}
+
+@mixin border-bottom-left-radius($value) {
+    -khtml-border-bottom-left-radius: $value;
+    -o-border-bottom-left-radius: $value;
+    -ms-border-bottom-left-radius: $value;
+    -moz-border-top-left-radius: $value;
+    -webkit-border-bottom-left-radius: $value;
+    border-bottom-left-radius: $value;
+}
+
+@mixin border-bottom-right-radius($value) {
+    -khtml-border-bottom-right-radius: $value;
+    -o-border-bottom-right-radius: $value;
+    -ms-border-bottom-right-radius: $value;
+    -moz-border-bottom-right-radius: $value;
+    -webkit-border-bottom-right-radius: $value;
+    border-bottom-right-radius: $value;
+}
+
+@mixin grid-auto-columns($value) {
+    -ms-grid-auto-columns: $value;
+    grid-auto-columns: $value;
+}
+@mixin grid-auto-rows($value) {
+    -ms-grid-auto-rows: $value;
+    grid-auto-rows: $value;
+}
+
+@mixin grid-column-end($value) {
+    -ms-grid-column-end: $value;
+    grid-column-end: $value;
+}
+@mixin grid-column-start($value) {
+    -ms-grid-column-start: $value;
+    grid-column-start: $value;
+}
+@mixin grid-column($start, $end) {
+    @include grid-column-start($start);
+    @include grid-column-end($end);
+}
+@mixin grid-row-end($value) {
+    -ms-grid-row-end: $value;
+    grid-row-end: $value;
+}
+@mixin grid-row-gap($value) {
+    -ms-grid-row-gap: $value;
+    grid-row-gap: $value;
+}
+@mixin grid-row-start($value) {
+    -ms-grid-row-start: $value;
+    grid-row-start: $value;
+}
+@mixin grid-row($start, $end) {
+    @include grid-row-start($start);
+    @include grid-row-end($end);
+}
+@mixin grid-template-columns($value) {
+    -ms-grid-template-columns: $value;
+    grid-template-columns: $value;
+}
+
+@mixin grid-template-rows($value) {
+    -ms-grid-template-rows: $value;
+    grid-template-rows: $value;
+}
+
+
+@mixin opacity($value) {
+    -o-opacity: $value;
+    -ms-opacity: $value;
+    -moz-opacity: $value; /* Mozilla extension */
+    -khtml-opacity:0.6; /* Konqueror extension (Safari 1.1)*/
+    opacity: 0.6; /* the correct CSS3 syntax */
+}
+
+
 // layout crazyness
-$header-height: 4em;
+$header-min-height: 3rem;
+$header-max-height: 62vh;

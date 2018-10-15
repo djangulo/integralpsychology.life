@@ -1,49 +1,103 @@
+/** Defines header
+* - Header container (block)
+* - Main navigation
+*/
+
 @import './variables';
+@import './header-hero';
+@import './home-hero.scss';
+@import './alerts';
+@import './nav';
 
 .header {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: $header-min-height;
+    max-height: $header-max-height;
     grid-area: header;
-    display: flex;
+    display: grid;
+    @include grid-template-rows(3rem minmax(15vh, min-content) minmax(0, min-content));
+    @include grid-template-columns(240px minmax(20px, 1fr) 2fr);
     justify-content: space-between;
-    align-content: center;
-    height: $header-height;
     background-color: white;
     @at-root #{&}__logo {
-        align-self: flex-start;
+        float: left;
+        height: $header-min-height;
+        @include grid-row(1, 2);
+        @include grid-column(1, 2);
         align-content: center;
         text-indent: -9999px;
-        height: $header-height;
-        width: 240px;
         background-size: contain;
         background-repeat: no-repeat;
     }
-    @at-root #{&}__image {
-        position: absolute;
-    }
-    .nav {
+    @at-root #{&}__nav-toggler {
+        float: right;
+        margin: 0;
+        margin-right: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        @include grid-row(1, 2);
+        @include grid-column(3, 4);
         align-self: center;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-        width: 50%;
-        height: $header-height;
-        text-align: center;
-        @at-root #{&}__link{
-            box-sizing: border-box;
-            min-width: 7em;
-            padding: $header-height / 3;
-            height: $header-height;
+        justify-self: end;
+        i {
+            padding: 0.2em;
+            @include border-radius(3%);
             &:hover {
-                border-bottom: 4px solid $colors-s-dark;
+                color: $colors-s-dark;
+            }
+            &:active {
+                background-color: $colors-s-light;
             }
         }
-        // @at-root #{&}__link{
-        //     margin: auto;
-        // }
+    }
+}
+.nav__link--active {
+    border-bottom: 4px solid $colors-s-dark;
+}
+
+
+// @media screen and (min-width: $phone-landscape) {
+//     .header {
+//         @at-root #{&}__nav-toggler {
+//             i {
+//                 &:hover {
+//                 }
+//                 &:active {
+//                 }
+//             }
+//         }
+//     }
+// }
+
+@media screen and (min-width: $tablet-portrait) {
+    .header {
+        min-height: $header-min-height + 1rem;
+        @include grid-template-rows(4rem minmax(15vh, min-content) minmax(0, min-content));
+        @at-root #{&}__logo {
+            height: $header-min-height + 1rem;
+        }
+        @at-root #{&}__nav-toggler {
+            display: none;
+            i {
+                font-size: 2em;
+            }
+        }
     }
 }
 
 
-.nav__link--active {
-    border-bottom: 4px solid $colors-s-dark;
+@media screen and (min-width: $tablet-portrait) {
+    .header {
+        @at-root #{&}__nav-toggler {
+            i {
+                &:hover {
+                }
+                &:active {
+                }
+            }
+        }
+    }
 }

@@ -176,6 +176,9 @@ class BlogPage(Page):
         context['dates'] = self.get_year_month_hierarchy()
         return context
 
+    class Meta:
+        ordering = ('-date_published',)
+
 
 class BlogIndexPage(RoutablePageMixin, Page):
     """

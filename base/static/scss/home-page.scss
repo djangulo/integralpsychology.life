@@ -1,26 +1,54 @@
-.main {
+@import './variables';
+.main-content {
     grid-area: main;
     display: grid;
     width: 100%;
-    grid-template-columns: minmax(50px, 6em) repeat(3, 1fr) minmax(50px, 6em);
-    grid-template-areas:
-    "hero hero hero hero hero"
-    ". f1 f1 f1 ."
-    ". body body body ."
-    ". f2 f2 f2 ."
-    ". f3 f3 f3 .";
+    @include grid-template-columns(25px repeat(3, 1fr) 25px);
+    @include grid-template-rows(repeat(2, min-content));
+    @include grid-auto-rows(min-content);
 }
 
 .page-body {
-    grid-area: body;
+    margin-top: 4rem;
+    &:after { // clearfix in case grid fails
+        content: "";
+        display: table;
+        clear: both;
+    }
+    @include grid-row(1, 2);
+    @include grid-column(2, -2);
 }
 
-.featured:nth-child(1n) {
-    grid-area: f1;
+.featured {
+    @include grid-row(2, 3);
+    @include grid-column(2, -2);
 }
-.featured:nth-child(2n) {
-    grid-area: f2;
+
+.full-width,
+.left,
+.right {
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+    display: block;
+    @include grid-column(2, -2);
+    @include border-radius(2%);
 }
-.featured:nth-child(3n) {
-    grid-area: f3;
+
+@media (min-width: $tablet-portrait) {
+    body {
+        font-size: 22px;
+    }
+    .left {
+        float: left;
+        margin-right: 1rem;
+        max-width: 60%;
+        @include grid-column(2, 4);
+    }
+    .right {
+        float: right;
+        margin-left: 1rem;
+        max-width: 60%;
+        @include grid-column(-4, -2);
+    }
 }

@@ -1,21 +1,48 @@
-.header {
-    display: block;
+@import './variables';
+.nav {
+    display: none;
+    @at-root #{&}--collapsed {
+
+    }
+}
+.nav--collapsed {
+    @include opacity(0);
 }
 
-.nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    @at-root #{&}__logo {
-        align-self: flex-start;
-        flex-basis: 1;
-    }
-    @at-root #{&}__links {
-        width: 60%;
+@media screen and (min-width: $tablet-portrait) {
+    .nav {
+        float: right;
+        grid-row: 1 / 2;
+        grid-column: 3 / 4;
         display: flex;
-        align-self: flex-end;
-        justify-content: space-around;
-        flex-basis: 6em;
+        flex-direction: row;
+        justify-self: flex-end;
+        text-align: center;
+        align-items: center;
+        @at-root #{&}__link{
+            font-size: 0.8em;
+            box-sizing: border-box;
+            min-width: 5rem;
+            padding: 0;
+            height: $header-min-height + 1rem;
+            line-height: $header-min-height + 1rem;
+            white-space: nowrap;
+            &:hover {
+                border-bottom: 4px solid $colors-s-dark;
+            }
+        }
     }
 }
+
+@media screen and (min-width: $tablet-landscape) {
+    .nav {
+        @at-root #{&}__link{
+            font-size: 1em;
+            min-width: 6rem;
+            &:hover {
+            }
+        }
+    }
+}
+
+
