@@ -154,6 +154,7 @@ LANGUAGES = (
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'npm.finders.NpmFinder',
     'sass_processor.finders.CssFinder',
 ]
 
@@ -217,3 +218,11 @@ CACHES = {
 # Django-sass settings
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
 # SASS_OUTPUT_STYLE = 'compressed'
+
+
+# django-npm settings
+NPM_FILE_PATTERNS = {
+    'tape': ['*', ],
+    'tape-css': ['*',],
+}
+NPM_STATIC_FILES_PREFIX = 'node_modules'

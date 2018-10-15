@@ -120,3 +120,6 @@ media/
 
 # temporarily ignore migrations until deployement
 # migrations/
+
+node_modules/
+!/*/node_modules/
